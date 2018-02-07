@@ -1,0 +1,12 @@
+g95 -O2 -o wpar wpar.f90 mpar.f90
+g95 -O2 -o wbb wbb.f90 wbb_sr.f90 mpar.f90 mbbio.f90
+g95 -O2 -o cbb cbb.f90 mpar.f90 mbbio.f90
+g95 -O2 -o rn rn.f90 mpar.f90 mbbio.f90 csort.f90 qsort.f90 depit.f90 cca.f90 smean.f90 dsf.f90 facet.f90 hg.f90
+g95 -O2 -o rrbb rrbb.f90 mpar.f90 mbbio.f90
+g95 -O2 -o rbb rbb.f90 mpar.f90 mbbio.f90
+g95 -O2 -o mrbb mrbb.f90 mrbb_sr.f90 mpar.f90 mbbio.f90
+g95 -O2 -o bb2shp bb2shp.f90 bb2shp_sr.f90 mpar.f90 mbbio.f90 shape.f90 dbase.f90 streamer.f90
+g95 -O2 -o cat_del cat_del.f90 mpar.f90 mbbio.f90
+g95 -O2 -o sa sa.f90 mpar.f90 mbbio.f90 shape.f90 dbase.f90 streamer.f90
+g95 -O2 -o ha ha.f90 mpar.f90 mbbio.f90 shape.f90 dbase.f90 streamer.f90
+g95 -O2 -o cppp cppp.f90 mpar.f90 mbbio.f90 wbb_sr.f90 csort.f90 qsort.f90 depit.f90 cca.f90 smean.f90 dsf.f90 facet.f90 hg.f90 mrbb_sr.f90 bb2shp_sr.f90 shape.f90 dbase.f90 streamer.f90
