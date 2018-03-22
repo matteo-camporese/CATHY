@@ -509,7 +509,9 @@ C   ISP    - =0 for flat surface layer (only one Z value is read in, and
 C            is replicated to all surface nodes); otherwise surface
 C            layer is not flat (Z values read in for each surface node)
 C            (for ISP=0, IVERT=0, 1, and 2 yield the same 3-d mesh, 
-C            given the same values of BASE and ZRATIO)
+C            given the same values of BASE and ZRATIO)  - MOREOVER -
+C            >=2 read NNOD different values of ZROOT, otherwise one 
+C                constant value of rooting depth
 C   INDP   - flag for pressure head initial conditions (all nodes)
 C            =0 for input of uniform initial conditions (one value 
 C               read in)
@@ -824,7 +826,7 @@ C             TRUE  we are doing back-step
 C   NCOUT  - flag to dump PSI, SW, PONDNOD output variables in a netCDF file
 C            (NCOUT=1 -> "cathy_netcdf_out.nc"). The same flag is used
 C            for the hydrograph (NCOUT=1 -> "cathy_netcdf_qout.nc").
-CC   TRANSP - logical flag for transport modeling   
+C   TRANSP - logical flag for transport modeling   
 C             FALSE = no transport
 C             TRUE  = transport 
 C Real Scalars for Initial Conditions and Vertical Discretization 
@@ -1291,7 +1293,9 @@ C                        time level
 C   QPOLD (NP)         - QPNEW values at previous time level
 C   QTRANIE(N)         - root-zone water uptake at current time level
 C                        always positive, changes sign in BCPIC
-C   ZROOT(NNOD)        - depth of root zone at every surface node
+C   ZROOT(NNOD)        - depth of root zone at every surface node,
+C                        read as raster in IIN3 if ISIMGR >= 1
+C                        otherwise read in IIN2 after grid info
 C   SCF                - soil cover fraction (fraction of soil covered
 C                        in vegetation)
 c STR_ZON(ZONE_VERT)   - for each vertical zone contain the last layer
@@ -2519,8 +2523,8 @@ c
 
 C Read transport input files if traflag = 1 
       IF (TRANSP) THEN 
-         CALL DATIN_TRA(NSTR,NZONE,NTRI,NTRI3,NADV,NADVFL,
-     1        LUMPC,FLAG_TEMP,FLAG_INTERP,FLAG_LIMITER,CFLINP,TETAC,
+         CALL DATIN_TRA(NSTR,NZONE,NTRI,NTRI3,NADV,NADVFL,LUMPC,
+     1        CDIFFUS,FLAG_TEMP,FLAG_INTERP,FLAG_LIMITER,CFLINP,TETAC,
      2        DIFFUS,GAMMAS,IPARM,ALFAL,ALFAT,KD,LAMBDA,MIXPART,
      3        REACFLAG)
 C         
@@ -2538,7 +2542,6 @@ C
 C  Inizialization of NUMRES. This command must be removed when the lake
 C  procedure will be active! MC
 C
- 
       NUMRES=0
       CALL VCOPYR(NUMRES,H_POOL_KK_VEC,H_POOL_KKP1_VEC)    
       CALL VCOPYR(NUMRES,H_POOL_KK_VEC_SAV,H_POOL_KK_VEC)    
@@ -2598,7 +2601,7 @@ C
          CALL WEIGHTNEIGHNODE(N,NT,X,Y,Z,XC,YC,ZC,TETRA,DISNOD,
      1        WEIGHTNOD)
          CALL LOCMAS(LMASSC,LUMPC)
-         CALL TOPIA(N,TOPOL,IAC)
+CM       CALL TOPIA(N,TOPOL,IAC)
       END IF
 C
 C IT IS OUT OF GRDSYS NOW BECAUSE OF THE CONNECTION PROCEDURE !!!!!!

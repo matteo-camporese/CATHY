@@ -1,14 +1,14 @@
 C
-C************************** SURF_FLOWTRA  *********************************
+C************************** SURF_FLOWTRA  ******************************
 C
 C surface water routing and solute transport procedure:
 C 
-C FOR FLOW  : takes OVFLNOD as input from FLOW3D and returns `routed' PONDNOD
-C as BC for FLOW3D
+C FOR FLOW: takes OVFLNOD as input from FLOW3D and returns `routed' 
+C           PONDNOD as BC for FLOW3D
 C
-C FOR TRANSPORT : takes TRAFLNOD as input from subsurface transport
-C and returns routed CONCNOD that is used to define the 
-C cauchy BC for subsurface transport
+C FOR TRANSPORT: takes TRAFLNOD as input from subsurface transport
+C                and returns routed CONCNOD that is used to define the 
+C                cauchy BC for subsurface transport
 C***********************************************************************
 C
       subroutine surf_flowtra(ncell,nnod,nrow,ncol,ntri,dostep,numres,

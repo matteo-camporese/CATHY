@@ -169,7 +169,14 @@ C
          IF (IPRT1 .GE .1) WRITE(IOUT2,1360) (I,Z(I),I=1,NNOD)
          READ(IIN2,*) ((TRIANG(I,K),I=1,4),K=1,NTRI)
          READ(IIN2,*) (X(K),Y(K),K=1,NNOD)
-        
+         IF (ISP .GE. 2) THEN
+            READ(IIN2,*) (ZROOT(I),I=1,NNOD)
+         ELSE
+            READ(IIN2,*) ZROOT(1)
+            DO I=2,NNOD
+               ZROOT(I)=ZROOT(1)
+            END DO
+         END IF
          
       ELSE IF (DEM) THEN
         
@@ -211,8 +218,8 @@ c
      1                       WEST,ROOT_MAP)
          CALL TRIANGOLI(NROW,NCOL,DELTA_X,DELTA_Y,WEST,SOUTH,
      1                  ROOT_MAP,ZONE,FACTOR,NNOD,NTRI,DOSTEP,
-     2                  NCELL_COARSE,NODI,TRIANG,TP2D,X,Y,ZROOT,ELTRIA,
-     3                  CELL)
+     2                  NCELL_COARSE,NODI,TRIANG,TP2D,X,Y,ZROOT,
+     3                  ELTRIA,CELL)
 c
 c  cells numbering with and without lakes
 c
