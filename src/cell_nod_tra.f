@@ -1,5 +1,5 @@
 C
-C**************************  CELL_NOD **********************************
+C**************************  CELL_NOD_TRA ******************************
 C
 C  transfer cell-values to nodal values taking into account
 C  possible coarsening of the triangulation (dostep>1)
@@ -8,19 +8,16 @@ C***********************************************************************
 C
       subroutine cell_nod_tra(ncell,nnod,cell,conccel,concnod,
      1                    delta_x,delta_y,arenod,pondcel,pondnod)
-
+C
       implicit none
-      include 'CATHY.H'
-      
-      integer ncell,nrow,ncol,nnod,ntri,dostep
+      integer ncell,nnod
       integer k,ii,inod,i
       integer cell(5,*)
-      real*8  concnod(nnod),conccel(maxcel)
+      real*8  concnod(*),conccel(*)
       real*8  mass_node(nnod)
       real*8  delta_x,delta_y,arenod(*)
       real*8  pondcel(*),pondnod(*)
-
-
+C
       call init0r(nnod,mass_node)
       call init0r(nnod,concnod)
       DO K=1,ncell
@@ -35,8 +32,6 @@ C
          concnod(i) = mass_node(i)/ (arenod(i)*pondnod(i))
         end if
       END DO
-
-
-
+C
       RETURN
       END

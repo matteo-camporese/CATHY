@@ -1,7 +1,7 @@
 C
 C**************************  DATIN_TRA  ************************************
 C
-C initialization of parameters for transport > READ in the transp input file
+C  initialization of parameters for transport > READ in the transp input file
 C
 C***************************************************************************
 C

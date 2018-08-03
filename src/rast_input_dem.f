@@ -1,8 +1,8 @@
 C
-C********************  RAST_INPUT_DLZ ***************************************
+C********************  RAST_INPUT_DEM ***************************************
 C
 C  reads a real raster map in GRASS (ASCII) format from unit IIN according 
-C  to matrix convenction. This subroutine is used to read the dem and base map 
+C  to matrix convention. This subroutine is used to read the dem and base map 
 C  raster input file
 C
 C*****************************************************************************
@@ -18,7 +18,7 @@ C
       INTEGER  IROW,ICOL
       REAL*8 NORTH,SOUTH,EAST,WEST
       CHARACTER RDWR*80,LINE*80
-      REAl*8 RAST(ROWMAX,COLMAX)
+      REAl*8 RAST(ROWMAX,*)
 
 c
 c  reads the first four lines (north,south,east,west)

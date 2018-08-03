@@ -12,16 +12,16 @@ C
      4            deltatadv,volur,volu,vn,swpint_el,swint_el,
      5            poros,cold_el,
      6            cnew_el,cdiff,prescfa_tra,flux,precl,precr,time)
-
+C
       implicit none
       INCLUDE 'CATHY.H'
       integer nnode, ntria,ntetra,nface,nstr,npfa_tra,n1,nzone
       integer flag_interp,flag_limiter,ip4(4,4),flag_temp
-      integer plist(2,*),side_cnc(4,*), puntdir(*)
+      integer plist(2,*),side_cnc(4,*),puntdir(*)
       integer neigh(4,*),neigbc(3,*)
       integer iside(3,*),tetravert(NMAX,*)
       integer tvert(*),tetra(5,*)
-      integer istrato, istr,izone,itetra
+      integer istrato,istr,izone,itetra
 c
       real*8  tot
       real*8  poros(MAXSTR,*),x(*),y(*),z(*)

@@ -28,13 +28,10 @@ C
 
       
       COMMON /RIVERNETWORK/
-     1       NORTH,SOUTH,EAST,WEST,
-     2       FACTOR,
-     3       DELTA_X,DELTA_Y,
-     4       QOI_SN,DTM_P_OUTFLOW_1,DTM_P_OUTFLOW_2,
-     5       DTM_W_1,DTM_W_2,
-     6       DTM_LOCAL_SLOPE_1,DTM_LOCAL_SLOPE_2,
-     7       DTM_EPL_1,DTM_EPL_2,
-     8       DTM_KSS1_SF_1,DTM_KSS1_SF_2,
-     9       DTM_WS1_SF_1,DTM_WS1_SF_2,DTM_B1_SF,DTM_Y1_SF,
-     A       DTM_NRC
+     1       NORTH,SOUTH,EAST,WEST,FACTOR,DELTA_X,DELTA_Y,
+     2       DTM_W_1,DTM_W_2,
+     3       DTM_LOCAL_SLOPE_1,DTM_LOCAL_SLOPE_2,
+     4       DTM_EPL_1,DTM_EPL_2,
+     5       DTM_KSS1_SF_1,DTM_KSS1_SF_2,
+     6       DTM_WS1_SF_1,DTM_WS1_SF_2,DTM_B1_SF,DTM_Y1_SF,
+     7       DTM_NRC,DTM_P_OUTFLOW_1,DTM_P_OUTFLOW_2,QOI_SN

@@ -2,8 +2,8 @@ C
 C**************************  DATIN  ************************************
 C
 C  read in some of the input data (other data is read in subroutines
-C  BCONE, BCNXT, ATMONE, ATMNXT, NUDONE, NUDNXT, EFFONE, EFFNXT, RAST_INPUT,
-C  FORCE_FLOWDIR, and FORCE_HG)
+C  BCONE, BCNXT, ATMONE, ATMNXT, NUDONE, NUDNXT, EFFONE, EFFNXT, and
+C  RAST_INPUT)
 C
 C***********************************************************************
 C
@@ -16,7 +16,7 @@ C
      6                 TOLUNS,TOLSWI,ERNLMX,ITMXCG,TOLCG,
      7                 KSLOPE,LUMP,IPEAT,IVGHU,NLKP,VTKF,
      8                 IOPT,ISOLV,IPRT1,IPRT,IPOND,INDP,NNOD,NTRI,NSTR,
-     9                 NZONE,N1,NR,NUMVP,NUM_QOUT,NPRT,N,NT,
+     9                 NZONE,NVEG,N1,NR,NUMVP,NUM_QOUT,NPRT,N,NT,
      A                 ISFONE,ISFCVG,DUPUIT,
      B                 L2NORM,NLRELX,OMEGA,
      C                 PONDH_MIN,
@@ -25,8 +25,8 @@ C
      F                 DEM_MAP,ZONE,LAKES_MAP,INDEX,INDEX_WITH_LAKES,
      G                 CELL,CELLCOL,CELLROW,TP2D,NODI,
      H                 TIPO_R,RESERVR,N_HA,CELLCOL_WL,CELLROW_WL,
-     I                 BASE_MAP,DEPTH,ELTRIA,NCOUT,ZROOT,TRAFLAG,TRANSP,
-     K                 VELREC)
+     I                 BASE_MAP,DEPTH,ELTRIA,NCOUT,TRAFLAG,TRANSP,
+     K                 VELREC,VEG_TYPE)
 C
       IMPLICIT  NONE
       INCLUDE  'CATHY.H'
@@ -35,7 +35,7 @@ C
       INTEGER   ISIMGR,IVERT,ISP
       INTEGER   ITUNS,ITUNS1,ITUNS2,ITMXCG,KSLOPE,LUMP,IPEAT
       INTEGER   IVGHU,IOPT,ISOLV,IPRT1,IPRT,IPOND,INDP,NZONE
-      INTEGER   NNOD,NTRI,NSTR
+      INTEGER   NNOD,NTRI,NSTR,NVEG
       INTEGER   NLKP,VTKF,VELREC
       INTEGER   N1,NR,NUMVP,NPRT,N,NT,ISFONE,ISFCVG,DUPUIT
       INTEGER   NUM_QOUT,L2NORM,NLRELX
@@ -50,8 +50,9 @@ C
       INTEGER   INDEX(ROWMAX,*),INDEX_WITH_LAKES(ROWMAX,*)
       INTEGER   NODI(ROWMAX+1,*),CELL(5,*)
       INTEGER   RESERVR(*)
-      INTEGER   TIPO_R(MAXCEL)
+      INTEGER   TIPO_R(*)
       INTEGER   N_HA(*)
+      INTEGER   VEG_TYPE(NODMAX)
       LOGICAL   GRID,DEM,FL3D,SURF,TRANSP
       REAL*8    SUMZ
       REAL*8    WTPOSITION,BASE,TETAF,DELTAT,DTMIN,DTMAX,TMAX
@@ -67,7 +68,7 @@ C
       REAL*8    VGPSATCELL(MAXSTR,*)
       REAL*8    TIMPRT(*),PONDNOD(*),PTIMEP(*)
       REAL*8    DEM_MAP(ROWMAX,*),BASE_MAP(ROWMAX,*)
-      REAL*8    ROOT_MAP(ROWMAX,COLMAX),ZROOT(NODMAX)
+      REAL*8    VEG_MAP(ROWMAX,COLMAX),SCR(NODMAX)
 
       INCLUDE  'IOUNITS.H'
       INCLUDE  'SOILCHAR.H'
@@ -141,9 +142,9 @@ C                   build up the surface mesh starting from the DEM
 C                   of the basin.
 C  
       IF (GRID) THEN 
-         READ(IIN2,*) NZONE,NSTR,N1
+         READ(IIN2,*) NZONE,NVEG,NSTR,N1
          READ(IIN2,*) NNOD,NTRI
-         WRITE(IOUT2,1020) NNOD,NTRI,NZONE,NSTR,N1
+         WRITE(IOUT2,1020) NNOD,NTRI,NZONE,NVEG,NSTR,N1
          READ(IIN2,*) IVERT,ISP,BASE
          WRITE(IOUT2,1350) IVERT,ISP,BASE
          READ(IIN2,*) (ZRATIO(I),I=1,NSTR)
@@ -170,12 +171,17 @@ C
          READ(IIN2,*) ((TRIANG(I,K),I=1,4),K=1,NTRI)
          READ(IIN2,*) (X(K),Y(K),K=1,NNOD)
          IF (ISP .GE. 2) THEN
-            READ(IIN2,*) (ZROOT(I),I=1,NNOD)
+            READ(IIN2,*) (VEG_TYPE(I),I=1,NNOD)
          ELSE
-            READ(IIN2,*) ZROOT(1)
+            READ(IIN2,*) VEG_TYPE(1)
             DO I=2,NNOD
-               ZROOT(I)=ZROOT(1)
+               VEG_TYPE(I)=VEG_TYPE(1)
             END DO
+         END IF
+         IF (NVEG.GT.MAXVEG) THEN
+            WRITE(IOUT2,*) 'Error: NVEG is too large=',NVEG
+            CALL CLOSIO
+            STOP
          END IF
          
       ELSE IF (DEM) THEN
@@ -194,11 +200,16 @@ C
          WRITE(IOUT40,*) 'DOSTEP=',DOSTEP                  
         
          IF (FL3D) THEN
-            READ(IIN11,*) NZONE,NSTR,N1 
+            READ(IIN11,*) NZONE,NVEG,NSTR,N1 
             READ(IIN11,*) IVERT,ISP,BASE
+            IF (NVEG.GT.MAXVEG) THEN
+               WRITE(IOUT2,*) 'Error: NVEG is too large=',NVEG
+               CALL CLOSIO
+               STOP
+            END IF
             IF (IVERT.EQ.3) THEN
-               CALL RAST_INPUT_DEM(IIN60,NROW,NCOL,NORTH,SOUTH,EAST,WEST
-     1              ,BASE_MAP)
+               CALL RAST_INPUT_DEM(IIN60,NROW,NCOL,NORTH,SOUTH,EAST,
+     1              WEST,BASE_MAP)
                CALL TRIANGOLI(NROW,NCOL,DELTA_X,DELTA_Y,WEST,SOUTH,
      1              BASE_MAP,ZONE,FACTOR,NNOD,NTRI,DOSTEP,
      2              NCELL_COARSE,NODI,TRIANG,TP2D,X,Y,DEPTH,ELTRIA,
@@ -212,13 +223,13 @@ c
          CALL RAST_INPUT_LZ(IIN20,NROW,NCOL,NORTH,SOUTH,EAST,
      1        WEST,LAKES_MAP)
 c
-c  reading of root zone depth
+c  reading of vegetation type (real raster map, then converted to int)
 c
          CALL RAST_INPUT_DEM(IIN3,NROW,NCOL,NORTH,SOUTH,EAST,
-     1                       WEST,ROOT_MAP)
+     1                       WEST,VEG_MAP)
          CALL TRIANGOLI(NROW,NCOL,DELTA_X,DELTA_Y,WEST,SOUTH,
-     1                  ROOT_MAP,ZONE,FACTOR,NNOD,NTRI,DOSTEP,
-     2                  NCELL_COARSE,NODI,TRIANG,TP2D,X,Y,ZROOT,
+     1                  VEG_MAP,ZONE,FACTOR,NNOD,NTRI,DOSTEP,
+     2                  NCELL_COARSE,NODI,TRIANG,TP2D,X,Y,SCR,
      3                  ELTRIA,CELL)
 c
 c  cells numbering with and without lakes
@@ -230,7 +241,7 @@ c
         WRITE(IOUT40,*) 'NCELNL=',NCELNL
         WRITE(IOUT40,*) 'NCELL=',NCELL
 c
-c  from cells to triangles: construction of traingles, numbering of 
+c  from cells to triangles: construction of triangles, numbering of 
 c  nodes ed elements, assignment of x y z coordinates, assignment of elevation
 c  values to triangles
 c
@@ -245,7 +256,7 @@ c
 c
 c     reading of grid parameters
 c
-            WRITE(IOUT40,1020) NNOD,NTRI,NZONE,NSTR,N1
+            WRITE(IOUT40,1020) NNOD,NTRI,NZONE,NVEG,NSTR,N1
             WRITE(IOUT40,1350) IVERT,ISP,BASE
             READ(IIN11,*) (ZRATIO(I),I=1,NSTR)
             SUMZ=0.0D0
@@ -405,7 +416,11 @@ C
          READ(IIN4,*) PMIN
          READ(IIN4,*) IPEAT,SCF
          READ(IIN4,*) CBETA0,CANG
-         READ(IIN4,*) SMCANA,SMCREF,SMCWLT,PZ,OMGC
+C    variable vegetation type (NVEG) within the domain
+         DO I=1,NVEG
+            READ(IIN4,*) PCANA(I),PCREF(I),PCWLT(I),ZROOT(I),
+     1                   PZ(I),OMGC(I)
+         END DO
 c     peat soil deformation is not yet supported for the Newton
 c     scheme
          IF (IOPT .NE. 1  .AND.  IPEAT .EQ. 1) THEN
@@ -546,8 +561,9 @@ C
  1020 FORMAT(/,5X,'NNOD   (# OF NODES IN 2-D MESH)         = ',I6,
      1       /,5X,'NTRI   (# OF TRIANGLES IN 2-D MESH)     = ',I6,
      2       /,5X,'NZONE  (NUMERO ZONE (MATERIAL TYPES))   = ',I6,
-     3       /,5X,'NSTR   (NUMERO STRATI)                  = ',I6,
-     4       /,5X,'N1     (NUM. MAX CONTATTI NODALI)       = ',I6)
+     3       /,5X,'NVEG   (NUMERO ZONE VEG (VEG TYPES))    = ',I6,
+     4       /,5X,'NSTR   (NUMERO STRATI)                  = ',I6,
+     5       /,5X,'N1     (NUM. MAX CONTATTI NODALI)       = ',I6)
  1025 FORMAT(  5X,'ITUNS  (MAX NONLINEAR ITER / TIME STEP) = ',I6,
      1       /,5X,'ITUNS1 (DELTAT INCREASE THRESHOLD)      = ',I6,
      2       /,5X,'ITUNS2 (DELTAT DECREASE THRESHOLD)      = ',I6)

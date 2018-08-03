@@ -43,7 +43,8 @@ c
 c noddir(ndir) = equation numbers to be excluded in the calculation of
 c                the residual
 c ia(nequ+1)   = pointer to diagonal element of row for system matrix
-c ja(nterm)    = column index for system matrix
+cxcx ja(nterm)    = column index for system matrix
+c ja(N1*N)     = column index for system matrix
 c iap(nequ+1)  = pointer to diagonal element of row for AINV matrix
 c                (used only if iprec=4)
 c jap(ntermp)  = column index for AINV matrix (used only if iprec=4)
@@ -81,15 +82,19 @@ c
       integer   iprt,iexit,iprec,imax,nequ,nterm,ntermp,ndir
       integer   info,iter
 
-      integer   noddir(ndir),ia(nequ+1),ja(nterm)
-      integer   iap(nequ+1),jap(ntermp)
+cxcx  integer   noddir(ndir),ia(nequ+1),ja(nterm)
+cxcx  integer   iap(nequ+1),jap(ntermp)
+      integer   noddir(*),ia(*),ja(*)
+      integer   iap(*),jap(*)
 
       real*8    tolcg,bnorm,resini,resnorm
 
       real*8    beta,alpha,zero
 
-      real*8    sysmat(nterm),prec(ntermp)
-      real*8    rhs(nequ),sol(nequ),res(nequ),pk(nequ),scr(3*nequ)
+cxcx  real*8    sysmat(nterm),prec(ntermp)
+cxcx  real*8    rhs(nequ),sol(nequ),res(nequ),pk(nequ),scr(3*nequ)
+      real*8    sysmat(*),prec(*)
+      real*8    rhs(*),sol(*),res(*),pk(*),scr(*)
 
       real*8    normres,dnrm2,ddot
 

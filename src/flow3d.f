@@ -63,12 +63,12 @@ C
       REAL*8   PERMX(MAXSTR,*),PERMY(MAXSTR,*),PERMZ(MAXSTR,*)
       REAL*8   SNODI(*),PNODI(*),PEL(*),PRESC(*),PTIM(*),PINP(3,*)
       REAL*8   PORE(*),INDE(*),DEF(*),INDE0(*)
-      REAL*8   Q(*),QTIM(*),QINP(3,*),QTRANIE(NMAX)
+      REAL*8   Q(*),QTIM(*),QINP(3,*),QTRANIE(*)
       REAL*8   ATMTIM(*),ATMINP(3,*)
       REAL*8   AI(4,*),BI(4,*),CI(4,*),DI(4,*),LMASS(4,4)
       REAL*8   ARENOD(*),VOLNOD(*),VOLU(*),VOLUR(*)
       REAL*8   ETAI(*),ETAE(*),DETAI(*),DETAIE(*),SW(*),SWE(*)
-      REAL*8   ET1(*),ET2(*),ET1E(*),SWNEW(NMAX),SWTIMEP(NMAX)
+      REAL*8   ET1(*),ET2(*),ET1E(*),SWTIMEP(*)
       REAL*8   CKRW(*),CKRWE(*),DCKRW(*),DCKRWE(*),SENODI(*),SEELT(*)
       REAL*8   POLD(*),PDIFF(*),PTOLD(*),PNEW(*),PTNEW(*),PTIMEP(*)
       REAL*8   TNOTI(*),XT5(*),LHSP(*),BKCFLOW_NODE(*)
@@ -80,6 +80,7 @@ C
       REAL*8   NUDX(*),NUDY(*),NUDZ(*),NUDCUM(*)
       REAL*8   NUDEPS(*),NUDDIF(*),NUDSMC(*),NUDNOD(*)
       REAL*8   NUDVAL(MAXNUDC,*),NUDTAU(MAXNUDT,*)
+      REAL*8   SWNEW(NMAX)
       INCLUDE 'NORMVL.H'
       INCLUDE 'MB_HGRAPH.H'
       INCLUDE 'IOUNITS.H'

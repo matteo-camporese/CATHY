@@ -1,34 +1,34 @@
         subroutine ut3d(iout6,NNOD,nstep,n,ntri3,nt,ntermc,
      1             npc,nmc,
      1             niaux,nraux,tetra,ip4,iaux,iparm,aux,
-     2             tetjac, jac,iac, nnpc,nnmc,topolc,
+     2             tetjac,jac,nnpc,nnmc,topolc,
      3             diffus,gammas,rmax,deltat,tetac,tolcg,
      4             x,y,z,uu,vv,ww,swe,volu,volur,volnod,ccur,
      5             ctimep,time,xt5c,tnotic,pc,mc1,poros,
-     6             kd, alfal, alfat, lmassc,lhsc,coef1c,
-     7             coef2c, cpuvec,iprt1,supdiffus,atmact)
+     6             kd,alfal,alfat,lmassc,lhsc,coef1c,
+     7             coef2c,cpuvec,iprt1,supdiffus,atmact)
 
 C
 C    Finite Element for the dispersive part of the transport equation
 C
       implicit none
       include 'CATHY.H'
-      INTEGER   iscratch(1),I, niaux, nraux,iout6,j
-      integer   iparm(10), IAUX(niaux), ex_num
+      INTEGER   iscratch(1),I,niaux,nraux,iout6,j
+      integer   iparm(10), IAUX(*),ex_num
       INTEGER   N,NT,NTERMC,NPC,NMC,NNOD
-      INTEGER   IPRT1,nstep, info,ntri3
+      INTEGER   IPRT1,nstep,ntri3
       INTEGER   TETRA(5,*),IP4(4,4),TETJAC(4,4,*),JAC(*)
-      INTEGER   IAC(*),NNPC(*),NNMC(*),TOPOLC(*)
+      INTEGER   NNPC(*),NNMC(*),TOPOLC(*)
       REAL      CPUVEC(*),CPUT1
       REAL*8    DIFFUS,GAMMAS,RMAX,DELTAT,TETAC,TOLCG
       REAL*8    X(*),Y(*),Z(*),UU(*),VV(*),WW(*)
       real*8    SWE(*),VOLU(*),VOLUR(*),volnod(*)
       REAL*8    CCUR(*),CTIMEP(*),XT5C(*),TNOTIC(*),ATMACT(*)
-      REAL*8    PC(*),MC1(*),aux(nraux),supdiffus,prec(MAXTRM)
+cxcx  REAL*8    PC(*),MC1(*),aux(*),supdiffus,prec(MAXTRM)
+      REAL*8    PC(*),MC1(*),aux(*),supdiffus
       REAL*8    POROS(MAXSTR,*),KD(MAXSTR,*)
       REAL*8    ALFAL(MAXSTR,*),ALFAT(MAXSTR,*)
       REAL*8    LMASSC(4,4),LHSC(*),COEF1C(*),COEF2C(*)
-      real*8    xx,yy,zz,vel_x,vel_y, fxyz,fsource
       real*8    time, zero
       
       zero=0.d0

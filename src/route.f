@@ -16,7 +16,6 @@ C***********************************************************************
       INCLUDE 'SURFWATER.H'
       INCLUDE 'IOUNITS.H'
       
-      
       INTEGER NCELL,NROW
       INTEGER N_O_QUOTA,I,J,I_BASIN,JR
       INTEGER NUM_RR,INDEX_RR
@@ -39,8 +38,7 @@ C***********************************************************************
       REAL*8 SURFACE_WATER,Q_OVERLAND_1,Q_OVERLAND_2
       REAL*8 H_POOL_KK,H_POOL_KKP1,H_FONDO_RR
       REAL*8 CR,CU,PE,X,C1,AK
-      
-     
+C
       CU_MAX=0.0D0
       
 C CALCULATION OF THE INFLOW HYDROGRAPHS. THE CELLS ARE PROCESSED

@@ -7,16 +7,14 @@
       implicit none
   
       INCLUDE 'CATHY.H' 
-      integer flag_limiter,ntetra,nnode, nface, npfa_tra,n1 
+      integer flag_limiter,ntetra,nnode,nface,npfa_tra,n1 
       integer flag_temp
-      integer neigh(4,*), side_cnc(4,ntetra)
-      integer iside(3,*), plist(2, nface)
-      integer puntdir(*), ip4(4,4),tetravert(nmax,*)
+      integer neigh(4,*),side_cnc(4,*)
+      integer iside(3,*),plist(2,*)
+      integer puntdir(*),ip4(4,4),tetravert(nmax,*)
       integer tetra(4,*)
-
       integer i,j,itetra,itvd,ind(4),t,j1,j2,j3
       integer ineigh,iface,idir,colnode,node,neartri
-     
       real*8  x(*),y(*),z(*)
       real*8  xc(*),yc(*),zc(*)
       real*8  conc_el(*),cdiff(*),prescfa_tra(*)
@@ -30,17 +28,14 @@
       real*8  eps
       real*8  der_x
       parameter (eps=1.e-10)
-
  
       logical tvd, noshoot, tbound
-
       
       do itetra = 1,ntetra
-
 C
 C      xnode, ynode, znode: x, y and z-coordinates of nodes of 
 C      each face
-
+C
          do j = 1,4
             iface= side_cnc(j,itetra)
             do i=1,3
@@ -93,7 +88,6 @@ C
 C
 C   computation of gradients of the three linear interpolation reconstruction
 C
-
          do j = 1,4
             j1=ip4(j,1)
             j2=ip4(j,2)
@@ -118,7 +112,6 @@ C
             const(j) =ubar-ux(j)*xb-uy(j)*yb - uz(j)*zb
             ind(j) = j
           end do
-
 C
 C    computation of the maximum gradient
 C    ind(1)---> index of maximum gradient
@@ -126,7 +119,6 @@ C    ind(2)---> index of second largest gradient
 C    ind(3)---> index of third  largest gradient
 C    ind(4)---> index of minimum gradient
 C
-
        if (unorm(ind(1)).lt.unorm(ind(2))) call swap(ind,1,2)
        if (unorm(ind(1)).lt.unorm(ind(3))) call swap(ind,1,3)
        if (unorm(ind(1)).lt.unorm(ind(4))) call swap(ind,1,4)
@@ -218,7 +210,6 @@ c                         u2 = 0.0d0
              tvd = (itvd.eq.4)
              i = i+1 
            end do
-           
 C
         end if
 C
@@ -306,8 +297,6 @@ c                            precr(iface)=precr(iface) +cdiff(itetra)
           end if
       end do
 
-     
-
       return
       end
 
@@ -318,7 +307,6 @@ C
       subroutine swap(vec,i,j)
      
       implicit none
-   
       integer i,j,vec(4),temp
 
       temp = vec(i)

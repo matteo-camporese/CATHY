@@ -1,5 +1,5 @@
 C
-C**************************  COMMON BLOCK SURFWATER ********************
+C**************************  COMMON BLOCK TRANSPSURF *******************
 C            
 C  real scalars and real arrays for surface transport routing
 C            

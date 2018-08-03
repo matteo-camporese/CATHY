@@ -1,5 +1,5 @@
 C
-C******************************NOD_CELL*********************************
+C***************************** NOD_CELL ********************************
 C
 C   transfer nodal values to dem cell values taking into account
 C   coarsening of triangulation (dostep>1)
@@ -12,16 +12,15 @@ C
 
       implicit none
       include 'CATHY.H'
-      include 'IOUNITS.H'
 
       integer nrow,ncol
       integer icell,k,l,ncell,nnod,i,j,icell_coarse,m,n
       integer dostep,ncell_coarse,nonnull
-      integer cell(5,*),indcelwl(rowmax,ncol),cont(NNOD)
+      integer cell(5,*),indcelwl(rowmax,*),cont(NNOD)
       real*8 delta_x,delta_y,pondnod(*)
-      real*8 cellvalue(maxcel),nodvalue(nnod),arenod(nnod)
-      real*8 cellcoarse(maxcel)
-      REAL*8 dem_map(rowmax,colmax) 
+      real*8 cellvalue(*),nodvalue(*),arenod(*)
+      real*8 cellcoarse(*)
+      REAL*8 dem_map(rowmax,*) 
        
 C
 c

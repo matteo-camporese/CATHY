@@ -24,7 +24,6 @@ C
       REAL*8       BCTIM(*),BCINP(3,*),BC(*)
       REAL*8       CONDIZIONE(*)
       CHARACTER*22 BCTYPE
-C     INCLUDE 'CATHY.H'
 C
       HTIBC=0
       BCTIM(1)=0.0D0

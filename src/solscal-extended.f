@@ -4643,7 +4643,7 @@ C
       REAL*8 FUNCTION SPDOT(N,SY,INDEX,SX)
 C
       IMPLICIT  REAL*8 (A-H,O-Z)
-      REAL *8 SY(1),SX(1),S
+      REAL*8 SY(1),SX(1),S
       INTEGER INDEX(1)
       S=0.
       DO 10 I=1,N
@@ -4875,7 +4875,6 @@ C    SYSTEMS    (FREUND)  (ALGORITMO 5.2 CON PESI)
       REAL*8 SS,EM1,TR,ERR
       INTEGER NITER,MITER,MIT,I,K
       INTEGER NP, CONTP(*),IN,IOUT
-      REAL GASDEV
 C-------------------
       write(99,*) 'iter, residual'
 c  Calcolo Ax0
@@ -4894,7 +4893,6 @@ C   CALCOLO Y0=Ux0=Ix0
        u(i)=r(i)
        rc(i)=r(i)
        dm(i)=0.
-C      RT(I)=GASDEV(I)
        RT(I)=R(I)
 15     continue
 C  CALCOLO V0=BY1
@@ -5037,7 +5035,6 @@ C    SYSTEMS    (FREUND)  (ALGORITMO 5.2 CON PESI)
       REAL*8 SS,EM1,TR,ERR
       INTEGER NITER,MITER,MIT,I,K
       INTEGER NP, CONTP(*),IN,IOUT
-      REAL GASDEV
       write(99,*) 'iter, residual'
 c  Calcolo Ax0
       call aperbn(n,topol,ja,coef1,x,scr1)
@@ -5055,7 +5052,6 @@ c   Calcolo y0=Ux0
        u(i)=r(i)
        rc(i)=r(i)
        dm(i)=0.
-C      RT(I)=GASDEV(I)
        RT(I)=R(I)
 15     continue
 C  CALCOLO V0=BY1

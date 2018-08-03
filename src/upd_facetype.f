@@ -20,7 +20,6 @@ CCC
      4                       PUNTNEUFLOW_NODE,CONNEU_NODE)
 
        IMPLICIT NONE
-
        INCLUDE 'CATHY.H'
 cc LOCAL
        INTEGER I,K

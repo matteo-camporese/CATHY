@@ -19,7 +19,6 @@ C
       REAL*8   mass_node(NT),SOURCE_MIXING(nnod),CONCNODUPD_new(nnod)
       real*8   test,futurepond(nnod),TRAFLNOD_FLOW(*),OVFLNOD(*)
       REAL*8   ATMACT(*),PONDNODP(*)
-      INCLUDE  'IOUNITS.H'
 C    
       CALL INIT0R(NNOD,CONCNODUPD_new)
       CALL VCOPYR(NNOD,CNNEW_stock,cnnew)
@@ -38,7 +37,7 @@ C
         CONCNODUPD_new(I)=(MASSSURF(I)+MASSSUB(I))/
      1                   (MIXPART*VOLSURF(I)+VOLSUB(I))
 
-        source_mixing (i)= ( CONCNODUPD_new(i) - CONCNODUPD(i) )
+        source_mixing(i)= ( CONCNODUPD_new(i) - CONCNODUPD(i) )
      1        * PONDNOD(I)*ARENOD(I) !/ deltat
 c     
         CNNEW(I)=MIXPART*CONCNODUPD_new(I)     

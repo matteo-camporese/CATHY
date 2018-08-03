@@ -8,11 +8,14 @@
          real*8  vx(*),vy(*),vz(*)
          real*8 time
          character*15 nome
+         character*15 file_vtk
 
          field=1
 
          write(nome,'(i3,a4)') iunit, '.vtk'
-         open(iunit, file=nome)
+         file_vtk='vtk'//'/'//nome
+         open(iunit, file=file_vtk)
+cm       open(iunit, file=nome)
         
          write(iunit,78) 
  78      FORMAT('# vtk DataFile Version 2.0',

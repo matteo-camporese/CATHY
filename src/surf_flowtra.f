@@ -3,12 +3,12 @@ C************************** SURF_FLOWTRA  ******************************
 C
 C surface water routing and solute transport procedure:
 C 
-C FOR FLOW: takes OVFLNOD as input from FLOW3D and returns `routed' 
+C FOR FLOW: takes OVFLNOD as input from FLOW3D and returns `routed'
 C           PONDNOD as BC for FLOW3D
 C
 C FOR TRANSPORT: takes TRAFLNOD as input from subsurface transport
 C                and returns routed CONCNOD that is used to define the 
-C                cauchy BC for subsurface transport
+C                Cauchy BC for subsurface transport
 C***********************************************************************
 C
       subroutine surf_flowtra(ncell,nnod,nrow,ncol,ntri,dostep,numres,
@@ -28,9 +28,9 @@ C
       integer  ncell_coarse,ncelnl
       INTEGER  NSURF,NSURFT,NSURFT_TB
       integer  i,j,k
-      integer  cell(5,*),indcel(rowmax,ncol),indcelwl(rowmax,ncol)
+      integer  cell(5,*),indcel(rowmax,*),indcelwl(rowmax,*)
       integer  tipo_r(*),reservr(*)
-      integer  lakes_map(rowmax,ncol)
+      integer  lakes_map(rowmax,*)
       integer  cellcol(*),cellrow(*)
       integer  celtype(*),cells_r(*)
       integer  tp2d(*),triang(4,*)
@@ -40,11 +40,10 @@ C
       real*8   arenod(*)
       real*8   OVFLNOD(*),PONDNOD(*)
       real*8   TRAFLNOD(*),CONCNOD(*),SOURCE_MIXING(*)
-      real*8   ovflcel(*),pondcel(*),dem_map(rowmax,ncol)
+      real*8   ovflcel(*),pondcel(*),dem_map(rowmax,*)
       real*8   traflcel(*),conccel(*),MIX_CORRECT(*)
       real*8   traflcel_mix(ncell),surface_mix_sn(*)
       INCLUDE 'SURFWATER.H'
-      INCLUDE 'IOUNITS.H'
       INCLUDE 'RIVERNETWORK.H'
       INCLUDE 'TRANSPSURF.H'
 C

@@ -17,10 +17,13 @@ c          4 -> AINV preconditioning
       implicit none
       integer  iprec,nequ,ntermp
       integer  i
-      integer  iap(nequ+1),jap(ntermp)
+cxcx  integer  iap(nequ+1),jap(ntermp)
+      integer  iap(*),jap(*)
 
-      real*8   prec(ntermp),vec(nequ),pvec(nequ)
-      real*8   scr(nequ)
+cxcx  real*8   prec(ntermp),vec(nequ),pvec(nequ)
+cxcx  real*8   scr(nequ)
+      real*8   prec(*),vec(*),pvec(*)
+      real*8   scr(*)
 
       if (iprec.eq.0) then
          call dcopy(nequ,vec,1,pvec,1)

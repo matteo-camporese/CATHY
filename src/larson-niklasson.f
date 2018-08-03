@@ -1,4 +1,4 @@
-ccc       LarsonNiklasson main 
+ccc       larson-niklasson main 
 
           SUBROUTINE ApplyLN(N,NT,Node_ElementCount,Node_ElementIDs,
      1               TETRA,UU,VV,WW,X,Y,Z,VOLU,ET1E,PEL,PNEW,

@@ -1,8 +1,8 @@
 C
 C*************************** nodetotetra *******************************
 C
-C FOR TRANSPORT :  pass the values from the centroid of each triangle to the nodes
-C  of the triangle
+C  FOR TRANSPORT: pass the values from the centroid of each triangle to
+C  the nodes of the triangle
 C
 C***********************************************************************
 C
@@ -16,9 +16,9 @@ C
       REAL*8    volu(*),volnod(*),pel(*),pnodi(*)
       real*8    volneigh(n),cont(n)
 C
-      call init0r(nt, pold)
-      call init0r(n, cont)
-      call init0r(n, volneigh)
+      call init0r(nt,pold)
+      call init0r(n,cont)
+      call init0r(n,volneigh)
 c      do itria = 1, nt
 c          do j=1,4
 c             jj=tetra(j,itria)
@@ -29,7 +29,6 @@ c      do j=1,nt
 c         pold(j) = pold(j)/4.0d0
 c      end do
          
-
       DO K=1,NT
          DO II=1,4
             INOD=TETRA(II,K)
@@ -46,7 +45,6 @@ c      end do
         end do
          pold(i) = pold(i)/ (volu(i) * pel(i))
       end do
-
-
+C
       RETURN
       END

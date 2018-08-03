@@ -3,7 +3,7 @@ C************************ LSOLVE ************************************
 C
       subroutine lsolve(nequ,nterm,ia,ja,lmat,vec,pvec)
 c
-c  forward and backward substitution for the appication
+c  forward and backward substitution for the application
 c  of the Choleski preconditioner
 c
 c   pvec:=(LL^T)^-1*vec (solves the system LL^T*pvec=vec)
@@ -12,8 +12,10 @@ c
 
       integer  nequ,nterm
       integer  k,n1,mm,i,j,m
-      integer  ia(nequ+1),ja(nterm)
-      real*8   lmat(nterm),pvec(nequ),vec(nequ)
+cxcx  integer  ia(nequ+1),ja(nterm)
+cxcx  real*8   lmat(nterm),pvec(nequ),vec(nequ)
+      integer  ia(*),ja(*)
+      real*8   lmat(*),pvec(*),vec(*)
       real*8   a,zero
 
       parameter (zero=0.d0)

@@ -16,12 +16,12 @@ C
       INCLUDE  'CATHY.H'
       INTEGER   K
       INTEGER   NNOD
-      INTEGER   HGFLAG(9),IFATM(NNOD)
+      INTEGER   HGFLAG(9),IFATM(*)
       real*8    evap,infflow,reflow
       REAL*8    TIME,APOT,AACT,OVFLOW,REFL
       REAL*8    evap_eff,inf_tot
       REAL*8    ZERO
-      REAL*8    ATMPOT(NNOD),ATMACT(NNOD),PNEW(NNOD)
+      REAL*8    ATMPOT(*),ATMACT(*),PNEW(*)
       INCLUDE  'IOUNITS.H'
       INCLUDE  'SOILCHAR.H'
       PARAMETER (ZERO=0.0D0)

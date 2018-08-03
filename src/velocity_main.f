@@ -12,7 +12,6 @@
        IMPLICIT NONE 
 
        INCLUDE 'CATHY.H'
-       INCLUDE 'IOUNITS.H'
        INTEGER CurrentFace
 cc variabili locali
        INTEGER I,J
@@ -114,7 +113,7 @@ c       END DO
 c       END IF 
 
 ccc Applico al correzione di Larson Niklasson. Tutte le subroutine 
-ccc Relative al calcolo le trovo in LarsonNiklasson. f
+ccc Relative al calcolo le trovo in larson-niklasson.f
        CALL ApplyLN(N,NT,Node_ElementCount,Node_ElementIDs,
      1      TETRA,UU,VV,WW,X,Y,Z,VOLU,ET1E,PEL,PNEW,
      1      PTIMEP,SW_NODE,SWP_NODE,DELTAT,

@@ -15,23 +15,6 @@ C
       REAL*8    TIMEP,TIME,DELTAT,DTMIN,DTMAX,TMAX
       REAL*8    DTMAGA,DTMAGM,DTREDS,DTREDM
 C
-cxcxcx
-cx    if (time .le. 228.0) then
-cx       dtmax=12.0
-cx    else if (time .gt. 228.0  .and.  time .lt. 239.0) then
-cx       dtmax=0.5
-cx    else if (time .ge. 239.0  .and.  time .lt. 239.9) then
-cx       dtmax=0.05
-cx    else if (time .ge. 239.9  .and.  time .lt. 240.1) then
-cx       dtmax=0.001
-cx    else if (time .ge. 240.1  .and.  time .lt. 241.0) then
-cx       dtmax=0.01
-cx    else if (time .ge. 241.0  .and.  time .lt. 260.0) then
-cx       dtmax=0.5
-cx    else if (time .ge. 260.0) then
-cx       dtmax=4.0
-cx    end if
-cxcxcx
       TIMEP=TIME
       IF (ITER .LT. ITUNS1) THEN
          DELTAT=DELTAT*DTMAGM + DTMAGA

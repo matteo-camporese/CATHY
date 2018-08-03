@@ -17,6 +17,11 @@ C   LHYGES, Strasbourg, France
 C
 C   Revision History:
 C   ----------------
+C   May/2018   : added variable vegetation type (variable PCANA,PCREF,
+C                PCWLT,ZROOT,PZ,OMGC within the domain; they are all defined
+C                in the SOIL input file). The root_map input file is now
+C                VEG_TYPE, an integer raster map, where NVEG is now
+C                an INTEGER (modified by V.Marchionni, Monash Uni).
 C   Jan/18     : new standard version including transport w/ or w/o 
 C                dispersion, coupling based on Dirichlet or Cauchy.
 C                EnKF and PF removed from the code, as DA is now available
@@ -44,11 +49,7 @@ C                SW, PONDNOD variables. The file is written in the
 C                new subroutine "detout_netcdf.f". MS
 C   Apr/14     : modified Neumann BCs. Re-introduced NNEU for vertically
 C                duplicated fluxes. If NNEU<0, free drainage BCs assigned
-C                to all NNOD bottom nodes. Works properly only if NZONE
-C                = 1. Also if NNEU<0, flux in NNEUC nodes is computed as the
-C                hydraulic conductivity times gradient times lateral
-C                area related to each node. Area times gradient is read in file
-C                input nansfneubc.
+C                to all NNOD bottom nodes.
 C   Jun/12     : added a moisture curve lookup table option for the
 C                Newton scheme. Note that the lookup table option is not
 C                yet supported for the EnKF and SIR DA schemes. The
@@ -510,7 +511,7 @@ C            is replicated to all surface nodes); otherwise surface
 C            layer is not flat (Z values read in for each surface node)
 C            (for ISP=0, IVERT=0, 1, and 2 yield the same 3-d mesh, 
 C            given the same values of BASE and ZRATIO)  - MOREOVER -
-C            >=2 read NNOD different values of ZROOT, otherwise one 
+C            >=2 read NNOD different values of VEG_TYPE, otherwise one
 C                constant value of rooting depth
 C   INDP   - flag for pressure head initial conditions (all nodes)
 C            =0 for input of uniform initial conditions (one value 
@@ -667,63 +668,58 @@ C   WFLAG  - flag for the choice of the weighting functions for nudging:
 C          = 0 Cressman-type functions [Paniconi et al., AWR, 2003];
 C          = 1 Exponential and Gaussian correlation functions for time
 C              and spatial influence, respectively.
-CC  TRAFLAG  -  flag for transport modeling
-C           = 0  without transport
-C           = 1  with transport
+C   TRAFLAG- flag for transport modeling
+C          = 0 without transport
+C          = 1 with transport
 C
 C  NADV   - integer number of advective time steps
 C                   DeltDatadv deltat/nadv
 C  NADVFL = 1  : the number of advective time steps is given in input by nadv
 C        = 0  :  the number of advective time steps is calculated in the 
 C        cflpecnumber subroutine considering the cflnum and the time step size
-C  flag_temp = 0    --->  Euler scheme in time and Godunov reconstruction                             
-C  flag_temp =1     --->  Euler scheme in time and 2nd order reconstruction                           
-C  flag_temp=2      ---> correction term added in midpoint(Euler) scheme in time                       
-C  flag_temp=3      ---> Mid-point scheme in time, Runge scheme                                        
-C  flag_temp=4     --->  Heun scheme in time                                                           
-C
-C flag_interp.eq.1 --->  construction of the interpolant as in Durlofsky                             
-C                        scheme taking into account the 4 possible interpolant                       
-C                        that can be constructed from the refering tetrahedron                        
-C    flag_limiter = 0        Durloflsky limiter                                                       
-C    flag_limiter = 1        min-limiter                                                              
-C    flag_limiter = 2        the maximum  gradient interpolant is chosen with                         
-C                            no limiter                                                               
-C    flag_limiter =3         the average of the 4 interpolant is applied with                         
-C                            no limiter                                                               
-C    flag_interp .eq.2  -->  construction of the interpolant considering the 4                           
-C                         neighbours tetrahedra                                                       
-C    flag_limiter =1         extremum limiter (see paper: compressible large                          
-C                            eddy simulation using unstructured grid:                                 
-C                            supersonic boundary layer and compression ramps,                         
-C                            Yan, Urbin, Knight, 10th Intern. Conf. on Methods                        
-C                            of Aerophysical Research,July 9-16 2000,                                 
-C                            Novosibirsk, Russia                                                      
-C    flag_limiter =2         Limited Central Difference LCD limiter  (see paper                       
-C                            Multidimensional Slope Limiters for MUSCL-type                           
-C                            finite volume schemes on unstructured grids,                             
-C                             M.E. Hubbard, J. Comp. Phys. 155, pp.54-74, 1999)                       
-C    flag_limiter =3         no limiter is applied                                                    
-C    flag_limiter=4          Barth-Jespersen limiter (see paper: The design and                       
-C                            application of upwind schemes on unstructerd                             
-C                            meshes, T. J. Barth, D. C. Jespersen, AIAA-89-0366)                      
-C   flag_interp.eq.3  --->  MLG scheme: the interpolant is chosen between                               
-C                         all the interpolant that can be constructed both                            
-C                        with flag_interp.eq.1. and flag_interp.eq.2                                  
-C                        Between them, the 'proper' interpolant is limited                            
-C                        with the LCD limiter (see above)                        
-C   flag_interp.eq.4  --->  MLS interpolant: the interpolant is chosen by the   
-C                         least squares method                                                         
-C     flag_limiter =1          extremum limiter                                                       
-C     flag_limiter=2           LCD limiter                                                            
-C     flag_limiter =3          no limiter                                                             
-C     flag_limiter=4           Barth-Jespersen limiter   
+C  flag_temp = 0    --->  Euler scheme in time and Godunov reconstruction
+C  flag_temp =1     --->  Euler scheme in time and 2nd order reconstruction
+C  flag_temp=2      ---> correction term added in midpoint(Euler) scheme in time
+C  flag_temp=3      ---> Mid-point scheme in time, Runge scheme
+C  flag_temp=4     --->  Heun scheme in time
+C flag_interp.eq.1 --->  construction of the interpolant as in Durlofsky
+C                        scheme taking into account the 4 possible interpolant
+C                        that can be constructed from the refering tetrahedron
+C    flag_limiter = 0        Durloflsky limiter
+C    flag_limiter = 1        min-limiter
+C    flag_limiter = 2        the maximum  gradient interpolant is chosen with
+C                            no limiter
+C    flag_limiter =3         the average of the 4 interpolant is applied with
+C                            no limiter
+C    flag_interp .eq.2  -->  construction of the interpolant considering the 4
+C                         neighbours tetrahedra
+C    flag_limiter =1         extremum limiter (see paper: compressible large
+C                            eddy simulation using unstructured grid:
+C                            supersonic boundary layer and compression ramps,
+C                            Yan, Urbin, Knight, 10th Intern. Conf. on Methods
+C                            of Aerophysical Research,July 9-16 2000,
+C                            Novosibirsk, Russia
+C    flag_limiter =2         Limited Central Difference LCD limiter  (see paper
+C                            Multidimensional Slope Limiters for MUSCL-type
+C                            finite volume schemes on unstructured grids,
+C                             M.E. Hubbard, J. Comp. Phys. 155, pp.54-74, 1999)
+C    flag_limiter =3         no limiter is applied
+C    flag_limiter=4          Barth-Jespersen limiter (see paper: The design and
+C                            application of upwind schemes on unstructerd
+C                            meshes, T. J. Barth, D. C. Jespersen, AIAA-89-0366)
+C   flag_interp.eq.3  --->  MLG scheme: the interpolant is chosen between
+C                         all the interpolant that can be constructed both
+C                        with flag_interp.eq.1. and flag_interp.eq.2
+C                        Between them, the 'proper' interpolant is limited
+C                        with the LCD limiter (see above)
+C   flag_interp.eq.4  --->  MLS interpolant: the interpolant is chosen by the
+C                         least squares method
+C     flag_limiter =1          extremum limiter
+C     flag_limiter=2           LCD limiter
+C     flag_limiter =3          no limiter
+C     flag_limiter=4           Barth-Jespersen limiter
 C
 C   NFACE  - # of faces
-C   NBD    - # of boundary faces or nodes 
-C            (in 2D: # of bnd faces = # of bnd nodes)
-C   NDOF   = # of degrees of freedom 
-C            (= NFACE - NBD for RT0; = 2*(NFACE - NBD) for BDM1)
 C Integer Parameters for SURF_ROUTE
 C ---------------------------------
 C   NSURF        - # of time steps for the surface routing module
@@ -919,10 +915,10 @@ C ------------------------
 C DELTATADV  - advective time step
 C SUPDIFFUS  - sup of norm of the diffusion matrix to define 
 C              the Peclet number 
-C CFLNUMB    - CFL number (if CFLNUMB =0 the FV scheme is not used)                                      
-C PECNUMB    - Peclet number as calculated by cflpecnumber.f                                                         
-C CFLINP     - real value, target cfl number when advective time step is calculated 
-C              automatically (NADVFL=1)
+C CFLNUMB    - CFL number (if CFLNUMB =0 the FV scheme is not used)
+C PECNUMB    - Peclet number as calculated by cflpecnumber.f
+C CFLINP     - real value, target cfl number when advective time step is
+C              calculated automatically (NADVFL=1)
 C DIFFUS     - molecular diffusion coefficient      
 C GAMMAS     - density of solid material     
 C TETAC      - weighting parameter for UT3D time stepping scheme for subsurface 
@@ -1095,8 +1091,8 @@ C                        This convention simplifies the handling of
 C                        seepage face nodes (relying on the fact that 
 C                        FORTRAN 77 does not execute a DO loop if the 
 C                        iteration count is zero or negative).
-C   SFEXIT(NSF)        - SFEX values at previous nonlinear iteration
-C   SFEXP (NSF)        - SFEX values at previous time level
+C   SFEXIT(NSF,NNSFMX) - SFEX values at previous nonlinear iteration
+C   SFEXP (NSF,NNSFMX) - SFEX values at previous time level
 C   NODDIR(NUMDIR)     - node #'s for all Dirichlet nodes in 3-d mesh
 C   CONTR (NR)         - node #'s for partial output
 C   NODVP (NUMVP)      - node #'s for surface nodes selected for 
@@ -1187,61 +1183,61 @@ C   NUDTET(NUDN) - pointer to the element within which the observation
 C                  points for nudging are located
 C Integer Arrays for transport modelling
 C --------------------------
-C   SIDE_CNC(4,NT) - element-face connectivities for each tetrale                                
-C   ISIDE(3,NFACE)     - global numbering of nodes that are adjacent                                 
-C                        to each face counting from south to north                                   
-C   PLIST(2,NFACE)     - west and east element number w.r.t oriented                                 
-C                        normal; west and east face local number                                     
-C   NEIGH(4,NT)    - list of neighbouring elements to each element                               
-C   TETRAVERT(NNODE,N1)- matrix of elements connected to each node                                   
-C   TVERT(NNODE)       - vector of numbers of elements connected to                                  
-C                        each node    
-C   Node_ElementIds(N,N1)- matrix of elements connected to each node                                   
-C   Node_ElementCount(N) - vector of numbers of elements connected to                                  
-C                        each node                                                                                                             
-C   INT_TO_GLOB(NDOF)  - pointer from internal to global face numbering                              
+C   SIDE_CNC(4,NT) - element-face connectivities for each tetrale
+C   ISIDE(3,NFACE)     - global numbering of nodes that are adjacent
+C                        to each face counting from south to north
+C   PLIST(2,NFACE)     - west and east element number w.r.t oriented
+C                        normal; west and east face local number
+C   NEIGH(4,NT)    - list of neighbouring elements to each element
+C   TETRAVERT(NNODE,N1)- matrix of elements connected to each node
+C   TVERT(NNODE)       - vector of numbers of elements connected to
+C                        each node
+C   Node_ElementIds(N,N1)- matrix of elements connected to each node
+C   Node_ElementCount(N) - vector of numbers of elements connected to
+C                        each node
 C   GLOB_TO_INT(NFACE) - pointer from global to internal face numbering
-C   NODE_FACECOUNT(N)  - number of face connected to a node                              
-C   NODE_FACEIDS(N,MAXFCONTONODE)  - faces # connected to each node                                    
-C   IBNDRY(NFACE)      - boundary face flag:                                                         
-C                        = -1 internal face                                                          
-C                        =  0 non-ATM non-SF Neumann b.c. face                                       
-C                        = 10 ATM Neumann b.c. face                                                 
-C                        = 20 SF Neumann b.c. face                                                  
-C                        =  1 non-ATM non-SF Dirichlet b.c. face                                     
-C                        = 11 ATM Dirichlet b.c. face                                         
-C                        = 21 SF Dirichlet b.c. face                                                 
-C   IBDEDGE(N)         - boundary node to boundary edge conversion                                   
-C                        assuming that given a node I on the boundary,                               
-C                        IBDEDGE(I) is such that I=ISIDE(1,IBDEDGE(I))                       
-C   PTRGEBC(NFACE)     - pointer from global face to boundary condition  
+C   NODE_FACECOUNT(N)  - number of face connected to a node
+C   NODE_FACEIDS(N,MAXFCONTONODE)  - faces # connected to each node
+C   IBNDRY(NFACE)      - boundary face flag:
+C                        = -1 internal face
+C                        =  0 non-ATM non-SF Neumann b.c. face
+C                        = 10 ATM Neumann b.c. face
+C                        = 20 SF Neumann b.c. face
+C                        =  1 non-ATM non-SF Dirichlet b.c. face
+C                        = 11 ATM Dirichlet b.c. face
+C                        = 21 SF Dirichlet b.c. face
+C   IBDEDGE(N)         - boundary node to boundary edge conversion
+C                        assuming that given a node I on the boundary,
+C                        IBDEDGE(I) is such that I=ISIDE(1,IBDEDGE(I))
+C   PTRGEBC(NFACE)     - pointer from global face to boundary condition
 C
-C CONTP_TRA (3,NP_TRA)  - TRANSPORT Dirichlet  node #'s in 3-d mesh      
+C CONTP_TRA (3,NP_TRA)  - TRANSPORT Dirichlet  node #'s in 3-d mesh
 C CONTPFA_TRA           - transport dirichlet face #'s in 3d mesh
 C
-C ACONTP_TRA(ANP_TRA)  - actual values of CONTP_TRA that is passed to the transport model 
+C ACONTP_TRA(ANP_TRA)  - actual values of CONTP_TRA that is passed to the
+C                        transport model
 C
 C  CONTQ_TRA(NQMAX_TRA)  - atmospheric cauchy boundary condition node's number
-C                        (equals to the surface node's number as we impose a Cauchy BC 
-C                         for all the surface node)
-C  QCAUCHY(NNOD)       - total cauchy bc values (after the switching)        
+C                        (equals to the surface node's number as we impose a
+C                        Cauchy BC for all the surface node)
+C  QCAUCHY(NNOD)       - total cauchy bc values (after the switching)
 C  Faces_FaceType(NFACEMAX) - Type of Faces For Velocity Reconstruction:
 C                          -1  Internal
 C                           0  Dirichlet
-C                           2  Neumann    
-C  CTIM  (3)           - most current input time values for                                         
-C                        TRANSPORT Dirichlet                                   
-C                        BC's, with CTIM(1) < CTIM(2) < CTIM(3)                                
-C                        and CTIM(2) < TIME <= CTIM(3)     
-C   CINP  (3,NP_TRA)       - TRANSPORT Dirichlet                                
+C                           2  Neumann
+C  CTIM  (3)           - most current input time values for
+C                        TRANSPORT Dirichlet
+C                        BC's, with CTIM(1) < CTIM(2) < CTIM(3)
+C                        and CTIM(2) < TIME <= CTIM(3)
+C   CINP  (3,NP_TRA)       - TRANSPORT Dirichlet
 C                        values corresponding to CTIM times.
-C                        PRESC_TRA(I) is obtained from CINP(2,I) and 
-C                        CINP(3,I) by linear interpolation (not any more, now        
-C                        by piecewise constant function).                                         
-C                        CINP(1,I) values are needed in the event that,    
-C                        after back-stepping, we have       
-C                        CTIM(1) < TIME <= CTIM(2)  
-C  
+C                        PRESC_TRA(I) is obtained from CINP(2,I) and
+C                        CINP(3,I) by linear interpolation (not any more, now
+C                        by piecewise constant function).
+C                        CINP(1,I) values are needed in the event that,
+C                        after back-stepping, we have
+C                        CTIM(1) < TIME <= CTIM(2)
+C
 C Real Arrays for Mesh Configuration and Boundary Conditions
 C ----------------------------------------------------------
 C   X     (N)          - x-coordinates (for 2-d mesh on input)
@@ -1293,9 +1289,9 @@ C                        time level
 C   QPOLD (NP)         - QPNEW values at previous time level
 C   QTRANIE(N)         - root-zone water uptake at current time level
 C                        always positive, changes sign in BCPIC
-C   ZROOT(NNOD)        - depth of root zone at every surface node,
-C                        read as raster in IIN3 if ISIMGR >= 1
-C                        otherwise read in IIN2 after grid info
+C   ZROOT(VEG_TYPE)    - depth of root zone for every vegetation type,
+C                        assigned on the basis of VEG_TYPE, read as
+C                        raster in IIN3 or in IIN2 after grid info
 C   SCF                - soil cover fraction (fraction of soil covered
 C                        in vegetation)
 c STR_ZON(ZONE_VERT)   - for each vertical zone contain the last layer
@@ -1393,19 +1389,20 @@ C              Dirichlet or Neumann boundary conditions. IFATM controls
 C              whether the atmospheric input for a given surface node
 C              is actually used). 
 C   KD(NSTR,NZONE)          - RETARDATION COEFFICIENT
-C   LAMBDA(NSTR,NZONE)      - Half time life
+C   LAMBDA(NSTR,NZONE)      - half-life characterizing first order degradation
 C
-C   PRESC_TRA (NP_TRA)  - transport Dirichlet (fixed concentration)                                 
-C                        values at current time level  
+C   PRESC_TRA (NP_TRA)  - transport Dirichlet (fixed concentration)
+C                        values at current time level
 C
-C    PRESCFA_TRA (NPFA_TRA) -  non-atmospheric, non-seepage face, Dirichletvalues  for faces
-C 
-C    ATMCONC(NNOD)  - imposed concentration in the atmospheric forcing - read in the input
-C                   file transp_atmbc
+C    PRESCFA_TRA (NPFA_TRA) -  non-atmospheric, non-seepage face, Dirichlet
+C                              values for faces
+C
+C    ATMCONC(NNOD)  - imposed concentration in the atmospheric forcing - read
+C                     in the input file transp_atmbc
 C
 C   QMASS_IN_KK_SN          (NCELL)    - mass discharge entering the cells a
 C                                    previous SURF_FLOWTRA time level
-C   QMASS_IN_KK_SN_SAV      (NCELL)    - variable defined to store QMASS_IN_KK_SN
+C   QMASS_IN_KK_SN_SAV      (NCELL)   - variable defined to store QMASS_IN_KK_SN
 C                                    in case of back-stepping
 C   QMASS_IN_KK_SN_P        (NCELL)    - mass discharge entering the cells at
 C                                    previous FLOW3D time level
@@ -1414,23 +1411,23 @@ C                                    actual time
 C   QMASS_OUT_KK_SN_1       (NCELL)    - mass discharge exiting the cells along
 C                                    the cardinal direction at
 C                                    previous SURF_FLOWTRA time level
-C   QMASS_OUT_KK_SN_1_SAV   (NCELL)    - variable defined to store QMASS_OUT_KK_SN_1
+C   QMASS_OUT_KK_SN_1_SAV  (NCELL) - variable defined to store QMASS_OUT_KK_SN_1
 C                                    in case of back-stepping
 C   QMASS_OUT_KK_SN_1_P     (NCELL)    - mass discharge exiting the cells along
 C                                    the cardinal direction at
 C                                    previous FLOW3D time level
-C   QMASS_OUT_KKP1_SN_1     (NCELL)    - mass discharge exiting the cells along 
+C   QMASS_OUT_KKP1_SN_1     (NCELL)    - mass discharge exiting the cells along
 C                                    the cardinal direction at
 C                                    actual time
 C   QMASS_OUT_KK_SN_2       (NCELL)    - mass discharge exiting the cells along
 C                                    the diagonal direction at
 C                                    previous SURF_FLOWTRA time level
-C   QMASS_OUT_KK_SN_2_SAV   (NCELL)    - variable defined to store QMASS_OUT_KK_SN_2
+C   QMASS_OUT_KK_SN_2_SAV  (NCELL) - variable defined to store QMASS_OUT_KK_SN_2
 C                                    in case of back-stepping
 C   QMASS_OUT_KK_SN_2_P     (NCELL)    - mass discharge exiting the cells along
 C                                    the diagonal direction at
 C                                    previous FLOW3D time level
-C   QMASS_OUT_KKP1_SN_2     (NCELL)    - mass discharge exiting the cells along 
+C   QMASS_OUT_KKP1_SN_2     (NCELL)    - mass discharge exiting the cells along
 C                                    the diagonal direction at
 C                                    actual time
 C
@@ -1440,17 +1437,19 @@ C   TRAFLNOD (NNOD)  - node-wise total mass flux from subsurface to surface
 C                       sum of advection fluxes and mixing ("dispersion") fluxes
 C   TRAFLNOD_FLOW (NNOD)  - node-wise mass flux produced by subsurface transport
 C   TRAFLP   (NNOD)  - node-wise mass flux at previous time level
-C   CONCNOD (NNOD)   - node-wise surface concentration produced by surface transport
-C   CONCNODUPD (NNOD)- node-wise surface concentration updated to account for the effect of
-C                      rainfall or evaopration
+C   CONCNOD (NNOD)   - node-wise surface concentration produced by surface
+C                      transport
+C   CONCNODUPD (NNOD)- node-wise surface concentration updated to account for
+C                      the effect of rainfall or evaopration
 C   TRAFLCEL (NCELL) - cell-wise mass flux produced by subsurface transport
-C   CONCCEL (NCELL)  - cell-wise surface concentration produced by surface transport
+C   CONCCEL (NCELL)  - cell-wise surface concentration produced by surface
+C                      transport
 C   ACTCEL  (NCELL) - cell-wise actual flux from subsurface (ATMACT
 C                     transferred to the cells)
 C   SOURCE_MIXING(NNOD) - node-wise mass flux produced by mixing
-C   MIX_CORRECT(NCELL) - cell-wise correction vector after mixing : filled out in SURF_FLOWTRA 
-C                        and used in MIXING_CORRECTION to correct first 
-C                        layer subsurface concentration.
+C   MIX_CORRECT(NCELL) - cell-wise correction vector after mixing; filled out
+C                        in SURF_FLOWTRA and used in MIXING_CORRECTION to
+C                        correct first layer subsurface concentration.
 C
 C Exchange Variables Between FLOW3D and SURF_ROUTE
 C ------------------------------------------------
@@ -1526,17 +1525,17 @@ C-----------------------
 C   Real Scalar Variables for Transport MASS BALANCE Calculation
 C   (CARLOTTA)
 C   MASST - mass of solute in the subsurface at each time step
-C            calculated by integrating moisture content*concentration 
+C            calculated by integrating moisture content*concentration
 C            (SW_NODE * CNEW_EL*PNODI)
 C            over the entire domain
 C   MASS0 - initial (time 0) mass of solute in the subsurface
-C   MASSINADV - total mass flown in through advection 
+C   MASSINADV - total mass flown in through advection
 C           across the domain boundary at each time step
-C   MASSOUTADV - total mass flown out through advection 
+C   MASSOUTADV - total mass flown out through advection
 C            from the domain boundary at each time step
-C   MASSINADVTOT - time-cumulated mass total mass flown in through advection 
+C   MASSINADVTOT - time-cumulated mass total mass flown in through advection
 C            across the domain boundary
-C   MASSOUTADVTOT - time-cumulated mass total mass flown out through advection 
+C   MASSOUTADVTOT - time-cumulated mass total mass flown out through advection
 C            from the domain boundary
 C   MASSSURF - total mass in the surface at the current time step
 C----------------------------------
@@ -1544,13 +1543,12 @@ C   real arrays for transport modeling and velocity reconstruction
 C    
 C   AREFACE(NFACE) - Surface Area of Each Face
 C   Faces_ReferenceVector(3,NFACE) - Normal Vector of each face
-C   FaceCentroid(3,NFACEMAX) - X,Y,Z coordinates of the Centroid of each 
-C                              Face  
+C   FaceCentroid(3,NFACEMAX) - X,Y,Z coordinates of the Centroid of each
+C                              Face
 C   Faces_NeumannFlux (NFACE) - Neumann condition for velocity
 C                               reconstruction on Neumann Face
-C   Faces_FaceFlux(3,NFACE)   - Three component of the flux 
-C                               on each face 
-C
+C   Faces_FaceFlux(3,NFACE)   - Three component of the flux
+C                               on each face
 C
 C-----------------------------
 C Real Arrays for Nudging
@@ -1587,6 +1585,10 @@ C Real Arrays for Material Properties and Hydraulic Characteristics
 C -----------------------------------------------------------------
 C   KS(NT)             - saturated hydraulic conductivity-xx in each
 C                        element
+C   KZ(NT)             - saturated hydraulic conductivity-zz in each
+C                        element
+C   KZNOD(N)           - saturated hydraulic conductivity-zz in each
+C                        node
 C   PERMX (NSTR,NZONE) - saturated hydraulic conductivity-xx
 C   PERMY (NSTR,NZONE) - saturated hydraulic conductivity-yy
 C   PERMZ (NSTR,NZONE) - saturated hydraulic conductivity-zz
@@ -1844,6 +1846,10 @@ C            atmospheric boundary conditions during evaporation)
 C   CBETA0,- parameters  for Camporese adaptation of Pyatt and 
 C   THETA0,  John relation for peat soil deformation
 C   CANG 
+C   PCANA,  Feddes parameters for computation of root water uptake.
+C   PCREF,  For details, see Camporese, Daly, Paniconi, WRR 2015.
+C   PCWLT,  Note that PCANA, PCREF, and PCWLT are given in terms
+C   PZ,OMGC  of pressure head.
 C   VGN,   - parameters for van Genuchten and extended van Genuchten 
 C   VGM,     moisture curves (other 'VG' parameters - specific storage,
 C   VGRMC,   porosity, and VGPNOT - are assigned nodally). VGM is 
@@ -2013,9 +2019,7 @@ C   IFN    - I/O file names
 C            (see subroutine OPENIO for unit IFN input)
 C   IIN1   - control parameters for FLOW3D and SURF_ROUTE
 C   IIN2   - grid info
-C   IIN3   - nodes with non-atmospheric, non-seepage face Neumann and
-C            Dirichlet BC's (not used any more, since the implementation
-C            of time variable nansfdir nodes - deleted from cathy.fnames)
+C   IIN3   - root map (ZROOT)
 C   IIN4   - soil characteristics
 C   IIN5   - initial conditions
 C   IIN6   - atmospheric BC's (rainfall/evaporation rates)
@@ -2156,7 +2160,7 @@ C
       INTEGER NNOD,NTRI,NSTR,N,NT,NSF,NUMDIR
       INTEGER NDIR(3),NDIRC(3),NNEU(3),NNEUC(3),NP(3),NQ(3)
       INTEGER NUDN,NUDT,NUDC
-      INTEGER NZONE,NLKP,NTERM,ITUNS
+      INTEGER NZONE,NVEG,NLKP,NTERM,ITUNS
       INTEGER NR,NPRT,NUMVP,NUM_QOUT
       INTEGER N1,IBOT
 C
@@ -2186,7 +2190,7 @@ C integer parameteres for transport
       INTEGER TRAFLAG,FLAG_TEMP,FLAG_INTERP,FLAG_LIMITER
       INTEGER NADV,NADVFL,LUMPC,CFLTETRA,TADV,CDIFFUS
       INTEGER NTRI3,IPRTCG,IPREC,ISOL,IEXIT
-      INTEGER NFACE,NBD,NDOF,NRAUX,NIAUX
+      INTEGER NFACE,NRAUX,NIAUX
       INTEGER NDIR_TRA(3),NDIRC_TRA(3),NP_TRA(3)
       INTEGER NPFA_TRA,HTIDIR_TRA
       INTEGER ANP_TRA,HSPVEL,NQ_TRA
@@ -2291,7 +2295,7 @@ C
       INTEGER IA(MAXTRM),JA(NTPMAX),TOPOL(NMAX+1),TETJA(4,4,NTEMAX)
       INTEGER IP3(3,3),IP4(4,4)
       INTEGER SFFLAG(5),HGFLAG(9),IER(7),INSYM(INTBOT)
-      INTEGER STR_ZON(MAXSTR)
+      INTEGER STR_ZON(MAXSTR),VEG_TYPE(NODMAX)
 C
 C  integer arrays for SURF_ROUTE
 C      
@@ -2311,9 +2315,10 @@ C
 C  real arrays for SURF_ROUTE
 C
       REAL*8 DEM_MAP(ROWMAX,COLMAX),BASE_MAP(ROWMAX,COLMAX)
+      REAL*8 ROOT_MAP(ROWMAX,COLMAX)
       REAL*8 EFFTIM(3),SURFACE_WATER_INP(2,MAXCEL)
 C
-C  integer arrays for subusrface transport
+C  integer arrays for subsurface transport
 C
       INTEGER   IPARM(10),IAC(MAXTRM)
       INTEGER   SIDE_CNC(4,NTEMAX),PLIST(2,NFACEMAX),ISIDE(3,NFACEMAX)
@@ -2341,7 +2346,7 @@ C
       REAL*8  PRESC(NPMAX),PTIM(3),PINP(3,NPMAX)
       REAL*8  Q(NQMAX),QTIM(3),QINP(3,NQMAX)
       REAL*8  QPNEW(NPMAX),QPOLD(NPMAX)
-      REAL*8  QTRANIE(NMAX),ZROOT(NODMAX),ZM(NODMAX)
+      REAL*8  QTRANIE(NMAX)
       REAL*8  SFQ(NSFMAX,NNSFMX),SFQP(NSFMAX,NNSFMX)
       REAL*8  SFQ_PARTIAL(NSFMAX)
       REAL*8  ARENOD(NODMAX),ATMPOT(NODMAX),ATMACT(NODMAX)
@@ -2381,7 +2386,7 @@ C
 C
 C  real arrays for material properties and hydraulic characteristics
 C
-      REAL*8  KS(NTEMAX)
+      REAL*8  KS(NTEMAX),KZ(NTEMAX),KZNOD(NMAX)
       REAL*8  PERMX(MAXSTR,MAXZON),PERMY(MAXSTR,MAXZON)
       REAL*8  PERMZ(MAXSTR,MAXZON),ELSTOR(MAXSTR,MAXZON)
       REAL*8  POROS(MAXSTR,MAXZON),VGNCELL(MAXSTR,MAXZON)
@@ -2509,7 +2514,7 @@ c
      6           TOLUNS,TOLSWI,ERNLMX,ITMXCG,TOLCG,
      7           KSLOPE,LUMP,IPEAT,IVGHU,NLKP,VTKF,
      8           IOPT,ISOLV,IPRT1,IPRT,IPOND,INDP,NNOD,NTRI,NSTR,
-     9           NZONE,N1,NR,NUMVP,NUM_QOUT,NPRT,N,NT,
+     9           NZONE,NVEG,N1,NR,NUMVP,NUM_QOUT,NPRT,N,NT,
      A           ISFONE,ISFCVG,DUPUIT,
      B           L2NORM,NLRELX,OMEGA,
      C           PONDH_MIN,
@@ -2518,8 +2523,8 @@ c
      F           DEM_MAP,ZONE,LAKES_MAP,INDCEL,INDCELWL,
      G           CELL,CELLCOL,CELLROW,TP2D,NODI,
      H           TIPO_R,RESERVR,N_HA,CELLCOL_WL,CELLROW_WL,
-     I           BASE_MAP,DEPTH,ELTRIA,NCOUT,ZROOT,TRAFLAG,TRANSP,
-     K           VELREC)
+     I           BASE_MAP,DEPTH,ELTRIA,NCOUT,TRAFLAG,TRANSP,
+     K           VELREC,VEG_TYPE)
 
 C Read transport input files if traflag = 1 
       IF (TRANSP) THEN 
@@ -2601,7 +2606,6 @@ C
          CALL WEIGHTNEIGHNODE(N,NT,X,Y,Z,XC,YC,ZC,TETRA,DISNOD,
      1        WEIGHTNOD)
          CALL LOCMAS(LMASSC,LUMPC)
-CM       CALL TOPIA(N,TOPOL,IAC)
       END IF
 C
 C IT IS OUT OF GRDSYS NOW BECAUSE OF THE CONNECTION PROCEDURE !!!!!!
@@ -2618,9 +2622,11 @@ C
          CALL TOPIA(N,TOPOL,IA)
       END IF
 C      
-      NDOF = NFACE
-      NRAUX = 5*NFACE + NTERM
-      NIAUX = NTERM + NFACE +1
+      write(iout2,1005) NTERM
+cxcx  NRAUX = 5*NFACE + NTERM
+cxcx  NIAUX = NTERM + NFACE + 1
+      NRAUX = 5*N + NTERM
+      NIAUX = NTERM + N + 1
 C
 C     further input and initialization for ICs, BCs, nudging, parameters,
 C  and misc counters, flags, and arrays
@@ -2692,9 +2698,19 @@ CM
             CALL VNOD3D(N,NT,TP,TETRA,UU,VV,WW,UNOD,VNOD,WNOD)
          END IF
 C Free drainage
+         CALL INIT0R(NTEMAX,KS)
+         CALL INIT0R(NTEMAX,KZ)
+         CALL INIT0R(NMAX,KZNOD)
+         DO I = 1,NSTR
+            DO J=(I-1)*NTRI*3+1,I*NTRI*3
+               KS(J)=PERMX(I,TETRA(5,J))
+               KZ(J)=PERMZ(I,TETRA(5,J))
+            END DO
+         END DO
+         CALL ELTNOD(N,NT,TP,TETRA,KZ,KZNOD)
          IF (NNEU(2).LT.0) THEN
             CALL VCOPYR(N,CKRWP,CKRW)
-            CALL NEUMANN(TIME,NNEU,NNEUC,NNOD,NSTR,CKRW,PERMX,PERMZ,
+            CALL NEUMANN(TIME,NNEU,NNEUC,NNOD,NSTR,CKRW,KZNOD,
      1                   ARENOD,ACONTQ,QINP,Q)
             NNINP=0.0D0
             NNOUTP=0.0D0
@@ -2778,7 +2794,7 @@ C
         CALL INIT0R(NCELL,MIX_CORRECT)
 c
 c     atmospheric BC for transport
-            CALL ATMONE_TRA(NNOD,CAUSPATM,CAUTIATM,IETOCAU,TIME,DELTAT,
+           CALL ATMONE_TRA(NNOD,CAUSPATM,CAUTIATM,IETOCAU,TIME,DELTAT,
      1          ATMCONC,CONCOLD,CONCTIM,CONCINP)                       
 c     
 c     initialize dirichlet boundary condition for transport            
@@ -2828,13 +2844,10 @@ CM      CALL DIAGN_OUTPUT(0,NPRT,TIME,N,NNOD,NSTR,BASE,ZRATIO,Z,
 CM   1          PNODI,ARENOD,VOLNOD,SW,PONDNOD,PNEW)
 CM       END IF         
          IF ((IPRT.GE.2).AND.(VTKF.GT.0)) THEN
-            DO I =1,NSTR
-               DO J=(I-1)*NTRI*3+1,I*NTRI*3
-                  KS(J)=PERMX(I,TETRA(5,J))
-               END DO
-            END DO
-            CALL VTKRIS3DF(NT,N,100,TETRA,0.0d0,PNEW,SW,UU,VV,
-     1           WW,X,Y,Z)
+CM          CALL VTKRIS3DF(NT,N,100,TETRA,0.0d0,PNEW,SW,UU,VV,
+CM   1           WW,X,Y,Z)
+            CALL VTKRIS3D(NT,N,100,TETRA,PNEW,SW,
+     1                    UU,VV,WW,X,Y,Z,KS,0.0d0,VTKF)
             IF(TRANSP)THEN
                CALL VTKRIS3DFC(NT,N,200,TETRA,0.0d0,CNEW,
      1              SW,X,Y,Z)
@@ -2901,7 +2914,7 @@ c           CALL INIT0I(3,ZEROC)
             CALL BCNXT('     NATM, NSF NEUMANN',IIN9,IOUT2,IOUT20,NNOD,
      1        NQMAX,IPRT1,NNEU,NNEUC,NQ,NSTR,HTINEU,TIME,
      2        QTIM,QINP,CONTQ,Q,ANQ,ACONTQ)
-            CALL NEUMANN(TIME,NNEU,NNEUC,NNOD,NSTR,CKRW,PERMX,PERMZ,
+            CALL NEUMANN(TIME,NNEU,NNEUC,NNOD,NSTR,CKRW,KZNOD,
      1                   ARENOD,ACONTQ,QINP,Q)
 C  input (if necessary), interpolate, and check for switching of 
 C  atmospheric boundary conditions.
@@ -2926,10 +2939,7 @@ C
 C  compute root water uptake for next time step
 C  time-variable maximum root depth
 C
-            DO I=1,NNOD
-                  ZM(I)=ZROOT(I)
-            END DO
-            CALL ETRAN(N,NNOD,NSTR,ATMPOT,Z,PNEW,PNODI,ZM,QTRANIE)
+            CALL ETRAN(N,NNOD,NSTR,ATMPOT,Z,PNEW,PNODI,VEG_TYPE,QTRANIE)
             QTRAN=0.0d0
             DO I=1,N
                QTRAN=QTRAN+QTRANIE(I)
@@ -3167,7 +3177,7 @@ C ----------------------------------------------------------------------
      9           ATMACT,ATMPOT,ATMOLD,
      A           QPNEW,QPOLD,SFQ,SFQP,ANP,ANQ,ACONTP,ACONTQ,
      B           NSFNOD,SFV,SFVNUM,SFVNOD,SFVTIM,TRANSP)
-            CALL NEUMANN(TIME,NNEU,NNEUC,NNOD,NSTR,CKRWP,PERMX,PERMZ,
+            CALL NEUMANN(TIME,NNEU,NNEUC,NNOD,NSTR,CKRWP,KZNOD,
      1                   ARENOD,ACONTQ,QINP,Q)
             GO TO 100
          END IF
@@ -3218,8 +3228,7 @@ c    5    Node_FaceCount(1),Node_FaceIDs(1,1),Faces_FaceType(1),
 c    6    NFACE,Faces_ReferenceVector(1,1),SIDE_CNC(1,1),
 c    7    XC(1),YC(1),ZC(1),time
       END IF
-c        stop
-      
+C
 C-----------VELOCITY CALCULATION AND HYDROGRAPH AND MASS BALANCE OUTPUT
 C
 C
@@ -3325,7 +3334,7 @@ C
      1                       pnodi,pel)
 C     
 C
-C     check weather we have diffusion or not
+C     check whether we have diffusion or not
 C     
          CALL CONTROLDIFF(NSTR,NZONE,ALFAL,ALFAT,DIFFUS,CDIFFUS)
 C     
@@ -3469,7 +3478,7 @@ C
 c            
             CALL UT3D(iout1,NNOD,NSTEP,N,NTRI3,NT,NTERM,ANP_TRA,NQ_TRA,
      1           NIAUX,NRAUX,TETRA,IP4,IAUX,IPARM,AUX,
-     2           TETJA,JA,IA,ACONTP_TRA,CONTQ_TRA,TOPOL,
+     2           TETJA,JA,ACONTP_TRA,CONTQ_TRA,TOPOL,
      3           DIFFUS,GAMMAS,RMAX,DELTAT,TETAC,TOLCG,
      4           X,Y,Z,UU,VV,WW,SWNEW,VOLU,VOLUR,VOLNOD,CNNEW,
      5           CNOLD,TIME,XT5C,TNOTIC,PRESC_TRA,QCAUCHY,POROS,
@@ -3711,11 +3720,6 @@ CM   1                 Z,PNODI,ARENOD,VOLNOD,SW,PONDNOD,PNEW)
 CM          END IF
 c               CALL VTKRIS1(NTRI, NNOD,200+kprt,TRIANG,ATMACT,X,Y)
                IF ((IPRT.GE.2).AND.(VTKF.GT.0)) THEN
-                  DO I =1,NSTR
-                     DO J=(I-1)*NTRI*3+1,I*NTRI*3
-                        KS(J)=PERMX(I,TETRA(5,J))
-                     END DO
-                  END DO
                   CALL  VTKRIS3D(NT,N,100+kprt,TETRA,PNEW,SW, 
      1                           UU,VV,WW,X,Y,Z,KS,TIME,VTKF)
                END IF
@@ -3843,11 +3847,6 @@ C
      2        UU,VV,WW,X,Y,Z,OVFLNOD,atmact,arenod,PONDNOD,ifatm,
      3        PNODI,RECNOD,QTRANIE,CNNEW)
          IF ((IPRT.GE.2).AND.(VTKF.GT.0)) THEN
-            DO I =1,NSTR
-               DO J=(I-1)*NTRI*3+1,I*NTRI*3
-                  KS(J)=PERMX(I,TETRA(5,J))
-               END DO
-            END  DO
             CALL VTKRIS3D(NT,N,100+kprt, TETRA,PNEW,SW, 
      1                    UU,VV,WW,X,Y,Z,KS,TIME,VTKF)
          END IF
@@ -4123,7 +4122,6 @@ c 2060 FORMAT(7X,I8,3(1PE15.6),i6,1pe15.6)
  1543 FORMAT('#VOLUME, SOLUTE MASS, ADSORBED MASS')
 c 1560 FORMAT(1X,1PE15.6)
 c 1570 FORMAT(1X,'NROW = ',I8,1X,'NCOL = ',I8)
- 1580 FORMAT(1PE16.8,5000(1PE16.7))
  1600 FORMAT(//,5X,
      1   'SATURATED HYDRAULIC CONDUCTIVITY, SPECIFIC STORAGE, AND ',
      2   'POROSITY VALUES',/,

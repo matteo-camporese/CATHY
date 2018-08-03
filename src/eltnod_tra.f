@@ -10,7 +10,7 @@ C
      1           VOLNOD,SWNEW,SW,NNOD)
 C
       IMPLICIT  NONE
-      INCLUDE 'CATHY.H'
+      INCLUDE  'CATHY.H'
       INTEGER   i,K,II,INOD,NNOD, j1, j2, j3, j4
       INTEGER   N,NT
       INTEGER   TETRA(5,*), cont(nmax)

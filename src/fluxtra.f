@@ -27,13 +27,13 @@ C     LOCAL
       REAL*8   Do3DScalarProduct
 C     PASSED
       INTEGER  n,nface,nt,velrec
-      INTEGER  plist(2,nface),side_cnc(4,nt)
-      INTEGER  iside(3,nface)  
+      INTEGER  plist(2,*),side_cnc(4,*)
+      INTEGER  iside(3,*)  
       INTEGER  Faces_FaceType(*) 
       INTEGER  Node_faceCount(*),Node_FaceIDS(NMAX,*)
-      real*8   x(n), y(n), z(n)
-      real*8   xc(nt), yc(nt), zc(nt)
-      REAL*8   vx(nt),vy(nt),vz(nt)
+      real*8   x(*), y(*), z(*)
+      real*8   xc(*), yc(*), zc(*)
+      REAL*8   vx(*),vy(*),vz(*)
       REAL*8   FACEFLUX(3,*)
       REAL*8   Faces_ReferenceVector(3,*),Faces_NeumannFlux(*)
       REAL*8   BKCFLOWINT_NODE(*),ARENOD(*)
@@ -160,9 +160,6 @@ CC
               END IF   
            END IF 
         END DO
-
-
+C
       RETURN
       END
-
-C

@@ -10,18 +10,17 @@ c
 c 
       implicit none
       include 'CATHY.H'
-      include 'IOUNITS.H'
       integer dostep,l,k,m,n,aaa,nonnull
       integer itria,i,j,icell,inod,nodibnd
       integer nrow,ncol,nnod,ntri,ncell,ncell_coarse
       integer tp2d(*),cell_big(rowmax,colmax)
-      integer nodi(rowmax+1,colmax+1),triang(4,*),bnd(rowmax+1*colmax+1)
-      integer cell(5,maxcel)
+      integer nodi(rowmax+1,*),triang(4,*),bnd(rowmax+1*colmax+1)
+      integer cell(5,*)
       real*8  factor,south,west
       real*8  delta_x,delta_y
-      real*8  x(*),y(*),z(*),eltria(ntrmax)
-      real*8  dem(rowmax,ncol)
-      integer zone(rowmax,ncol)
+      real*8  x(*),y(*),z(*),eltria(*)
+      real*8  dem(rowmax,*)
+      integer zone(rowmax,*)
     
       
 c     nodibnd=0

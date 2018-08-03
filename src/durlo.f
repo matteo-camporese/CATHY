@@ -10,29 +10,24 @@ C
       implicit none
 
       INCLUDE 'CATHY.H'
+      integer itetra,iface,itetra1,itetra2
       integer ntetra,nface
-      integer itetra, iface, itetra1, itetra2
-
       integer plist(2,*)
+      real*8 cup,qn
       real*8 time
-      real*8 volur(*),c,a
-      real*8 vn(*),precl(*),precr(*)
-      real*8 flux(ntemax),cup
-      real*8 uno,zero,qn, qn1, qn2
-      parameter (uno=1.0d0,zero=0.0d0)
-
-      
-      
+cxcx  real*8 volur(*),c,a
+      real*8 volur(*)
+      real*8 vn(*),precl(*),precr(*),flux(*)
+C
       call init0r(ntemax,flux)
 c
-c  
-c
-       do iface=1,nface
-          c=c+precl(iface)
-       end do
-       do iface=1,nface
-          c=c+precr(iface)
-       end do
+cxcx "c" computed below is never used ...
+cxcx   do iface=1,nface
+cxcx      c=c+precl(iface)
+cxcx   end do
+cxcx   do iface=1,nface
+cxcx      c=c+precr(iface)
+cxcx   end do
       do iface = 1,nface
          itetra1 = plist(1,iface)
          itetra2 = plist(2,iface)
@@ -50,8 +45,6 @@ c
       do itetra = 1,ntetra
          flux(itetra)= -dabs(volur(itetra))*flux(itetra)
       end do
-
-
+C
       return
       end
-

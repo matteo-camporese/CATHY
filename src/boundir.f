@@ -8,7 +8,7 @@ C
       subroutine BOUNDIR(nface,np,contp,puntdir)
       implicit none
       integer nface, np
-      integer contp(np), puntdir(nface)
+      integer contp(*), puntdir(*)
       integer i,iface
       
 C     puntdir is the inverse function of edgedir

@@ -1,5 +1,5 @@
 C
-C**************************  CONCUPD ***********************************
+C**************************  CONC_BC ***********************************
 C
 C  update surface CONCENTRATION FOR COUPLING SURFACE AND SUBSURFACE TRANSPORT
 C
@@ -17,7 +17,6 @@ C
       REAL*8   CONCNOD(*),ATMCONC(*),CONCNODBC(*),CNNEW(*)
       REAL*8   CONCNOD_OLD(*),CONCNODUPD(*)
       REAL*8   VOLTOT(NNOD),MASSURF(NNOD),MASSPOT(NNOD),PRESC_TRA(*)
-      INCLUDE  'IOUNITS.H'
 C    
 C      
       DO I = 1,NNOD

@@ -8,7 +8,8 @@ C
       integer   nequ,info,ndir,i
 
       real*8    bnorm,resnorm,zero
-      real*8    sol(nequ),rhs(nequ)
+cxcx  real*8    sol(nequ),rhs(nequ)
+      real*8    sol(*),rhs(*)
       real*8    dnrm2
 
       parameter (zero = 0.d0)

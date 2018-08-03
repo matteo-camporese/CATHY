@@ -12,10 +12,13 @@ C***********************************************************************
 c
       implicit none
       integer nequ,nterm
-      integer ja(nterm),ia(nequ+1)
+cxcx  integer ja(nterm),ia(nequ+1)
+      integer ja(*),ia(*)
       integer k,m,mm,i
-      real*8  ztmat(nterm),vec(nequ),pvec(nequ)
-      real*8  scr(nequ)
+cxcx  real*8  ztmat(nterm),vec(nequ),pvec(nequ)
+cxcx  real*8  scr(nequ)
+      real*8  ztmat(*),vec(*),pvec(*)
+      real*8  scr(*)
 c
 c   scr=Z x equivale al prodotto della matrice trasposta per un vettore
 c

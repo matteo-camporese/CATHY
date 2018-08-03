@@ -8,7 +8,8 @@ c     modified 12/3/93, array(1) declarations changed to array(*)
 c
       implicit none
       integer i,incx,incy,ix,iy,m,mp1,n
-      real*8 dx(n),dy(n),da
+cxcx  real*8 dx(n),dy(n),da
+      real*8 dx(*),dy(*),da
 c
       if(n.le.0)return
       if (da .eq. 0.0d0) then

@@ -21,6 +21,7 @@ C
 
       do k=1,nnod
         tp2d(k)=0
+        z(k)=0.0d0
       end do
 
       DO K=1,NTRI

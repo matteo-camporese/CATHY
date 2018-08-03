@@ -1,5 +1,5 @@
 C
-C**************************  weightneighnode ************************************
+C**********************  weightneighnode *******************************
 C
 C  calculate for each node the value
 C  1/r_i where r_i is the distance of the node to the centroid
@@ -12,11 +12,10 @@ C
      1                          disnod,weightnod)
 C
       IMPLICIT  NONE
-      INCLUDE 'CATHY.H'
-      INTEGER   i,k,elle,inod, j
+      INTEGER   i,j,k,elle,inod
       INTEGER   N,NT
-      INTEGER   TETRA(5,*), cont(NMAX)
-      real*8    x(*), y(*), z(*), xbar(*), ybar(*), zbar(*)
+      INTEGER   TETRA(5,*),cont(N)
+      real*8    x(*),y(*),z(*),xbar(*),ybar(*),zbar(*)
       real*8    disnod(24,*),weightnod(*),aux
 C
       do i=1,n

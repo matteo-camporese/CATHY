@@ -1,17 +1,17 @@
 C
-C*************************** nodetotetra *******************************
+C*************************** nodetotetra_tra ***************************
 C
-C FOR TRANSPORT :  pass the values from the nodes to the centroid of each tretrahedra
-C This subroutine juste changes the fisrt layer of tetrahedral concentration
-C to avoid numerical dispersion
+C  FOR TRANSPORT: pass the values from the nodes to the centroid of each
+C  tretrahedra.
+C  This subroutine juste changes the fisrt layer of tetrahedral concentration
+C  to avoid numerical dispersion.
 C
 C***********************************************************************
 C
-      SUBROUTINE nodetotetra_tra(N,NT,TETRA,nstr,CNEW,CNNEW,PEL,PNODI
-     1           ,VOLU,VOLNOD,SWNEW,SW,TP,NNOD,COLD,CNOLD)
+      SUBROUTINE nodetotetra_tra(N,NT,TETRA,nstr,CNEW,CNNEW,PEL,PNODI,
+     1           VOLU,VOLNOD,SWNEW,SW,TP,NNOD,COLD,CNOLD)
 C
       IMPLICIT  NONE
-      INCLUDE 'CATHY.H'
       INTEGER   i,K,II,INOD,nnod
       INTEGER   N,NT,NSTR
       INTEGER   TETRA(5,*),TP(*),cont(nnod)
@@ -32,7 +32,6 @@ c
             cont(i)=0
             end do
 
-
       do i = 1, nt
         DO II=1,4 
         inod=tetra(ii,i)
@@ -52,4 +51,3 @@ c      write(*,*) i, cont(i)
 C
       RETURN
       END
-

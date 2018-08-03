@@ -38,10 +38,6 @@ c Output variables
         END IF
       END DO
 
-    
-
-
-
       CALL BOUNDIR(NFACE,NPFA_TRA,CONTPFA_TRA,PUNTDIR)   
 
       RETURN

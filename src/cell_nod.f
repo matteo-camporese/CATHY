@@ -16,11 +16,12 @@ C
       
       integer ncell,nrow,ncol,nnod,ntri,dostep
       integer icell,i,j,k,l,ii,inod,nonnull,m,n
-      integer tp2d(nnod),triang(4,ntri),cell(5,*)
-      integer indcel(rowmax,ncol)
-      real*8  pondnod(nnod),cellcoarse(maxcel),pondcell(maxcel)
-      real*8  dem_map(rowmax,ncol),volume_node(nnod)
+      integer tp2d(*),triang(4,*),cell(5,*)
+      integer indcel(rowmax,*)
+      real*8  pondnod(*),cellcoarse(*),pondcell(*)
+      real*8  dem_map(rowmax,*),volume_node(nnod)
       real*8  delta_x,delta_y,arenod(*)
+C
 c      do i=1,ncell
 c         cellcoarse(i) = 0.0d0
 c      end do

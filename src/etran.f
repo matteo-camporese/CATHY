@@ -3,16 +3,17 @@ C***********************************************************************
 C             Subroutine ETRAN, computes root water uptake
 C***********************************************************************
 C
-      SUBROUTINE ETRAN(N,NNOD,NSTR,ATMPOT,Z,PSI,PNODI,ZROOT,QTRANIE)
+      SUBROUTINE ETRAN(N,NNOD,NSTR,ATMPOT,Z,PSI,PNODI,VEG_TYPE,QTRANIE)
 
       IMPLICIT NONE
       INCLUDE 'CATHY.H'
       INCLUDE 'SOILCHAR.H'
 
       INTEGER I,J,K,N,NNOD,NSTR
+      INTEGER VEG_TYPE(*)
       REAL*8  SH2O,GX,ZERO,DZ,ZSURF,DEPTH,BETA
       REAL*8  S1,S2,GX1,GX2
-      REAL*8  Z(*),ZROOT(*),PSI(*),PNODI(*)
+      REAL*8  Z(*),PSI(*),PNODI(*)
       REAL*8  ATMPOT(*),QTRANIE(*)
       REAL*8  BTRAN(NNOD),BTRANI(N),ETP(NNOD),OMG(NNOD)
       DATA    ZERO/0.0d+00/
@@ -30,25 +31,27 @@ C
          ELSE
             ETP(I) = 0.0d0
          END IF
-         DO WHILE (DEPTH.LE.ZROOT(I))
+         DO WHILE (DEPTH.LE.ZROOT(VEG_TYPE(I)))
             K = (J-1)*NNOD+I
-            S1 = SMCANA
-            S2 = MAX(ZERO,SMCANA+1.0D-03)
+            S1 = PCANA(VEG_TYPE(I))
+            S2 = MAX(ZERO,PCANA(VEG_TYPE(I))+1.0D-03)
             IF (J.EQ.1) THEN
                DZ = (ZSURF-Z(K+NNOD))/2.0d0
             ELSE
                DZ = (Z(K-NNOD)-Z(K+NNOD))/2.0d0
             END IF
             SH2O = PSI(K)
-            GX1 = (SH2O-SMCWLT) / (SMCREF-SMCWLT)
+            GX1 = (SH2O-PCWLT(VEG_TYPE(I))) / 
+     &            (PCREF(VEG_TYPE(I))-PCWLT(VEG_TYPE(I)))
             GX1 = MIN(1.0d0,MAX(0.0d0,GX1))
             GX2 = 1.0d0 - (SH2O-S1)/(S2-S1)
             GX2 = MIN(1.0d0,MAX(0.0d0,GX2))
             GX = MIN(GX1,GX2)
-CM          IF (SH2O.GE.SMCANA) GX = 0.0d0
+CM          IF (SH2O.GE.PCANA) GX = 0.0d0
 CM          PZ = -7.044D-03*ZROOT(I)**4 + 1.261D-01*ZROOT(I)**3
 CM   +           -8.101D-01*ZROOT(I)**2 + 6.849D+00*ZROOT(I) - 3.345D+00
-            BETA = (1-DEPTH/ZROOT(I))*DEXP(-1.0d0*PZ*DEPTH/ZROOT(I))
+            BETA = (1-DEPTH/ZROOT(VEG_TYPE(I)))*
+     &             DEXP(-1.0d0*PZ(VEG_TYPE(I))*DEPTH/ZROOT(VEG_TYPE(I)))
             BTRANI(K) = MAX(ZERO,BETA*DZ*GX)
             BTRAN(I)  = BTRAN(I) + BETA*DZ
             OMG(I)    = OMG(I) + GX*BETA*DZ
@@ -68,7 +71,8 @@ cm          write(111,*)k,gx1,gx2,beta,btrani(k)
 cm       write(666,*)i,etp(i),btran(i),zroot(i)
          DO J=1,NSTR+1
             K = (J-1)*NNOD+I
-            QTRANIE(K)=ETP(I)*BTRANI(K)/BTRAN(I)/MAX(OMG(I),OMGC)
+            QTRANIE(K)=ETP(I)*BTRANI(K)/BTRAN(I)/
+     &                 MAX(OMG(I),OMGC(VEG_TYPE(I)))
 cm          write(111,*)k,qtranie(k),btrani(k),btran(i)
          END DO
       END DO

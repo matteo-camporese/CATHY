@@ -34,7 +34,8 @@ c iparm(10)    = array of control parameters (see local integer scalars)
 c noddir(ndir) = equation numbers to be excluded in the calculation of
 c                the residual
 c ia(nequ+1)   = pointer to diagonal element of row for system matrix
-c ja(nterm)    = column index for system matrix
+cxcx ja(nterm)    = column index for system matrix
+c ja(N1*N)     = column index for system matrix
 c iaux(niaux)  = scratch array
 c
 c
@@ -103,7 +104,8 @@ c
       implicit none
 
       integer  nequ,nterm,ndir,niaux,nraux
-      integer  iparm(10),noddir(ndir),ia(nequ+1),ja(nterm),iaux(niaux)
+cxcx  integer  iparm(10),noddir(ndir),ia(nequ+1),ja(nterm),iaux(niaux)
+      integer  iparm(10),noddir(*),ia(*),ja(*),iaux(*)
 
       integer  ntermp,iout,iprt,iexit,iprec,info,iter,imax,isol
       integer  indiap,indjap,ires,ipk,iscr1,indprec
@@ -112,7 +114,8 @@ c
 
       real*8   tolcg
 
-      real*8   aux(nraux),sysmat(nterm),rhs(nequ),sol(nequ)
+cxcx  real*8   aux(nraux),sysmat(nterm),rhs(nequ),sol(nequ)
+      real*8   aux(*),sysmat(*),rhs(*),sol(*)
       real*8   bnorm,resini,resnorm,resreal
 
       real*8   normres

@@ -1,12 +1,11 @@
       SUBROUTINE FACETYPE(N,NFACE,PLIST,ISIDE,IFSF,IFSFP,IFATM,
      1                    IFATMP,IBNDRYP,IBNDRY,
      2                    NODE_FACECOUNT,NODE_FACEIDS,AREFACE)
-
+C
       IMPLICIT NONE 
-    
       INCLUDE 'CATHY.H' 
-C  LOcal 
-      INTEGER I,J 
+C  Local 
+      INTEGER I
 c  Input 
       INTEGER N,NFACE,PLIST(2,*),ISIDE(3,*)
       INTEGER IFSFP(*),IFATMP(*)
@@ -15,8 +14,6 @@ c  Input
       REAL*8  AREFACE(*)
 c  Output
       INTEGER IBNDRYP(*),IBNDRY(*)
-      REAL*8  ARENODO(N)
-
 
       DO I=1,NFACE
          IF(PLIST(2,I).EQ.0)THEN

@@ -9,7 +9,6 @@ C
 C
       IMPLICIT NONE
 C
-      INCLUDE 'CATHY.H'
       INCLUDE 'IOUNITS.H'
 
       INTEGER N,K,INDC

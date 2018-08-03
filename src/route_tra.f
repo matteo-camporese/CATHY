@@ -1,5 +1,5 @@
 C
-C************************** ROUTE **************************************
+C************************** ROUTE_TRA **********************************
 C  
 C  CALCULATION  OF THE INFLOW RATE FOR THE DOWNSTREAM CELL AT T+1 AND T,
 C  Q_INFLOW_KKP1_SN AND Q_INFLOW_KK_SN, AND OF THE LATERAL INFLOW OF THE 
@@ -39,8 +39,7 @@ C***********************************************************************
       REAL*8 SURFACE_CONC,QMASS_OVERLAND_1,QMASS_OVERLAND_2
       REAL*8 H_POOL_KK,H_POOL_KKP1,H_FONDO_RR
       REAL*8 CR,CU,PE,X,C1,AK
-      
-     
+C
       CU_MAX=0.0D0
       
 C CALCULATION OF THE INFLOW HYDROGRAPHS. THE CELLS ARE PROCESSED

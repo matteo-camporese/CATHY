@@ -2,7 +2,7 @@ C
 C**************************  RAST_INPUT_LZ ************************************
 C
 C  reads an integer raster map in GRASS (ASCII) format from unit IIN according 
-C  to matrix convenction. This subroutine is used to read the lakes,and
+C  to matrix convention. This subroutine is used to read the lakes,and
 C  zone (lz) raster input file
 C
 C**************************************************************************
@@ -18,7 +18,7 @@ C
       INTEGER  IROW,ICOL
       REAL*8 NORTH,SOUTH,EAST,WEST
       CHARACTER RDWR*80,LINE*80
-      INTEGER RAST(ROWMAX,COLMAX)
+      INTEGER RAST(ROWMAX,*)
 
 c
 c  reads the first four lines (north,south,east,west)

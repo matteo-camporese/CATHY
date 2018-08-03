@@ -9,14 +9,12 @@ C
      1                    RECVOL,RECNOD)
 C
       IMPLICIT  NONE
-      INCLUDE   'CATHY.H'
       INTEGER   I,J
       INTEGER   NNOD,NSTR
       REAL*8    TIME,DELTAT,ZERO
       REAL*8    RECFLOW,RECVOL
-      REAL*8    WNOD(NMAX),ARENOD(NODMAX),PSI(NMAX)
-      REAL*8    RECNOD(NODMAX)
-      INCLUDE  'IOUNITS.H'
+      REAL*8    WNOD(*),ARENOD(*),PSI(*)
+      REAL*8    RECNOD(*)
       PARAMETER (ZERO=0.0d0)
 C
       RECFLOW = zero

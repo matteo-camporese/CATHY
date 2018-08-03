@@ -11,16 +11,23 @@ C
       implicit  none
       integer   i,k,m,mm
       integer   nequ,nterm,ndir
-      integer   ia(nequ+1),ja(nterm),noddir(ndir)
+cxcx  integer   ia(nequ+1),ja(nterm),noddir(ndir)
+      integer   ia(*),ja(*),noddir(*)
 
-      real*8    sysmat(nterm),rhs(nequ),xk(nequ),res(nequ)
+cxcx  real*8    sysmat(nterm),rhs(nequ),xk(nequ),res(nequ)
+      real*8    sysmat(*),rhs(*),xk(*),res(*)
 c
       do k=1,nequ
          res(k)=rhs(k)
       end do
-      do k=1,ndir
-         res(noddir(k))=0.0d0
-      end do
+cxcx  do k=1,ndir
+cxcx     res(noddir(k))=0.0d0
+cxcx  end do
+      if (ndir .gt. 0) then
+         do k=1,ndir
+            res(noddir(k))=0.0d0
+         end do
+      end if
       do k=1,nequ
          m=ia(k)
          mm=ia(k+1)-1

@@ -9,8 +9,10 @@ c
       implicit none
       integer  nequ,ndir
       integer  i
-      integer  noddir(ndir)
-      real*8   vec(nequ),scr(nequ)
+cxcx  integer  noddir(ndir)
+      integer  noddir(*)
+cxcx  real*8   vec(nequ),scr(nequ)
+      real*8   vec(*),scr(*)
       real*8   zero
       real*8   dnrm2
 

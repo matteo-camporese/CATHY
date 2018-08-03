@@ -15,8 +15,8 @@ c     4                        NSFNUM,MASS_OUT_DIR,ANP,ACONTP,QPNEW)
      2                        SWP_EL)
 C
       IMPLICIT  NONE
-      INCLUDE   'CATHY.H'
-      INCLUDE  'IOUNITS.H'
+c     INCLUDE   'CATHY.H'
+c     INCLUDE  'IOUNITS.H'
       INTEGER   I,J
       INTEGER   NT,N
 c      INTEGER   TETRA(5,*),NSF,NSFNOD(NSFMAX,*),NSFNUM(*)
@@ -24,7 +24,7 @@ c      INTEGER   ANP,ACONTP(*)
       REAL*8    TIME,DELTAT
       REAL*8    CNEW_EL(*),COLD_EL(*),COLDOLD(*)
       REAL*8    VOLU(*),VOLNOD(*),SW_EL(*),SWP_EL(*)
-      REAL*8    PEL(NT)
+cxcx  REAL*8    PEL(NT)
 c      REAL*8    SFQ(NSFMAX,*)
       REAL*8    MASS_TOT,MASS_BILAN,MASS_OUT_SF,MASS_OUT_DIR
 c      REAL*8    QPNEW(*)
@@ -35,16 +35,23 @@ C
       MASS_TOT_sat=0.0d0
       MASS_TOT_unsat=0.0d0
       DO i=1,NT
-      PEL(I)=0.5
-      MASS_TOT=MASS_TOT+(CNEW_EL(I)*VOLU(I)*SW_EL(I)*PEL(I))
+cxcx  PEL(I)=0.5
+cxcx  MASS_TOT=MASS_TOT+(CNEW_EL(I)*VOLU(I)*SW_EL(I)*PEL(I))
+      MASS_TOT=MASS_TOT+(CNEW_EL(I)*VOLU(I)*SW_EL(I)*0.5)
+cxcx  MASS_BILAN=MASS_BILAN+
+cxcx 1           (CNEW_EL(I)*VOLU(I)*SW_EL(I)*PEL(I)-
+cxcx 2           COLDOLD(I)*VOLU(I)*SWP_EL(I)*PEL(I))
       MASS_BILAN=MASS_BILAN+
-     1           (CNEW_EL(I)*VOLU(I)*SW_EL(I)*PEL(I)-
-     2           COLDOLD(I)*VOLU(I)*SWP_EL(I)*PEL(I))
+     1           (CNEW_EL(I)*VOLU(I)*SW_EL(I)*0.5-
+     2           COLDOLD(I)*VOLU(I)*SWP_EL(I)*0.5)
         IF (SW_EL(I).EQ.1) THEN
-        MASS_TOT_sat=MASS_TOT_sat+(CNEW_EL(I)*VOLU(I)*PEL(I))
+cxcx    MASS_TOT_sat=MASS_TOT_sat+(CNEW_EL(I)*VOLU(I)*PEL(I))
+        MASS_TOT_sat=MASS_TOT_sat+(CNEW_EL(I)*VOLU(I)*0.5)
         ELSE
+cxcx    MASS_TOT_unsat=MASS_TOT_unsat
+cxcx 1             +(CNEW_EL(I)*VOLU(I)*SW_EL(I)*PEL(I))
         MASS_TOT_unsat=MASS_TOT_unsat
-     1             +(CNEW_EL(I)*VOLU(I)*SW_EL(I)*PEL(I))
+     1             +(CNEW_EL(I)*VOLU(I)*SW_EL(I)*0.5)
         END IF
       END DO
       write(*,*) 'MASS_TOT',MASS_TOT

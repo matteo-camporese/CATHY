@@ -8,11 +8,13 @@ c
       implicit none
 c
       integer  iout,nequ,nterm
-      integer  ia(nequ+1),JA(nterm)
+cxcx  integer  ia(nequ+1),JA(nterm)
+      integer  ia(*),JA(*)
 
       integer  i,j,k,kk,k1,i1,j1,k2
 
-      real*8   prec(nterm),sysmat(nterm)
+cxcx  real*8   prec(nterm),sysmat(nterm)
+      real*8   prec(*),sysmat(*)
       real*8   a,zero
 
       parameter (zero=0.0)
