@@ -3,6 +3,7 @@
 CATHY main repository. MP
 
 DISCLAIMER
+
 CATHY is an open-source research code, written in Fortran and with no graphical user interface.
 The code is provided on the understanding that it should be used only for research purposes.
 No use of this code, in whole or in part, should be made for commercial purposes without the prior written consent of
