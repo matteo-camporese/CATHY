@@ -200,13 +200,8 @@ C
          WRITE(IOUT40,*) 'DOSTEP=',DOSTEP                  
         
          IF (FL3D) THEN
-            READ(IIN11,*) NZONE,NVEG,NSTR,N1 
+            READ(IIN11,*) NZONE,NSTR,N1 
             READ(IIN11,*) IVERT,ISP,BASE
-            IF (NVEG.GT.MAXVEG) THEN
-               WRITE(IOUT2,*) 'Error: NVEG is too large=',NVEG
-               CALL CLOSIO
-               STOP
-            END IF
             IF (IVERT.EQ.3) THEN
                CALL RAST_INPUT_DEM(IIN60,NROW,NCOL,NORTH,SOUTH,EAST,
      1              WEST,BASE_MAP)
@@ -231,6 +226,16 @@ c
      1                  VEG_MAP,ZONE,FACTOR,NNOD,NTRI,DOSTEP,
      2                  NCELL_COARSE,NODI,TRIANG,TP2D,X,Y,SCR,
      3                  ELTRIA,CELL)
+         NVEG=0
+         DO I=1,NNOD
+            VEG_TYPE(I)=INT(SCR(I))
+            NVEG=MAX(NVEG,VEG_TYPE(I))
+         END DO
+         IF (NVEG.GT.MAXVEG) THEN
+            WRITE(IOUT2,*) 'Error: NVEG is too large=',NVEG
+            CALL CLOSIO
+            STOP
+         END IF
 c
 c  cells numbering with and without lakes
 c

@@ -21,7 +21,7 @@ C   May/2018   : added variable vegetation type (variable PCANA,PCREF,
 C                PCWLT,ZROOT,PZ,OMGC within the domain; they are all defined
 C                in the SOIL input file). The root_map input file is now
 C                VEG_TYPE, an integer raster map, where NVEG is now
-C                an INTEGER (modified by V.Marchionni, Monash Uni).
+C                an INTEGER. MC
 C   Jan/18     : new standard version including transport w/ or w/o 
 C                dispersion, coupling based on Dirichlet or Cauchy.
 C                EnKF and PF removed from the code, as DA is now available
@@ -29,7 +29,7 @@ C                as an external shell written in R (anna.botto@unipd.it).
 C   Feb/17     : added subroutine ETRAN for computing root water uptake,
 C                according to the method implemented in cathy-noah. Feddes
 C                parameters must be given in terms of pressure head.
-C                WARNING! Not implemented in the EnKF/SIR
+C                WARNING! Not implemented in the EnKF/SIR. MC
 C   Apr/15     : added hetereogeneity in VGN parameters (VGN,VGPSAT,VGRMC).
 C                These parameters are assigned at the cells and calculated
 C                then at the nodes. We read these parameters in the same way
