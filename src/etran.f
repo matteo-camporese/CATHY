@@ -34,7 +34,7 @@ C
          DO WHILE (DEPTH.LE.ZROOT(VEG_TYPE(I)))
             K = (J-1)*NNOD+I
             S1 = PCANA(VEG_TYPE(I))
-            S2 = MAX(ZERO,PCANA(VEG_TYPE(I))+1.0D-03)
+            S2 = PCANA(VEG_TYPE(I))+1.0D-03
             IF (J.EQ.1) THEN
                DZ = (ZSURF-Z(K+NNOD))/2.0d0
             ELSE
