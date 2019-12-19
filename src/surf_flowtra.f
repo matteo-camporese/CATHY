@@ -23,12 +23,16 @@ C
 C     
       implicit none
       include 'CATHY.H'
+      INCLUDE 'SURFWATER.H'
+      INCLUDE 'RIVERNETWORK.H'
+      INCLUDE 'TRANSPSURF.H'
       LOGICAL  TRANSP
       integer  ncell,nnod,nrow,ncol,ntri,dostep,numres
       integer  ncell_coarse,ncelnl
       INTEGER  NSURF,NSURFT,NSURFT_TB
       integer  i,j,k
-      integer  cell(5,*),indcel(rowmax,*),indcelwl(rowmax,*)
+      integer  cell(5,maxcel),indcel(rowmax,colmax)
+      integer  indcelwl(rowmax,colmax)
       integer  tipo_r(*),reservr(*)
       integer  lakes_map(rowmax,*)
       integer  cellcol(*),cellrow(*)
@@ -42,10 +46,7 @@ C
       real*8   TRAFLNOD(*),CONCNOD(*),SOURCE_MIXING(*)
       real*8   ovflcel(*),pondcel(*),dem_map(rowmax,*)
       real*8   traflcel(*),conccel(*),MIX_CORRECT(*)
-      real*8   traflcel_mix(ncell),surface_mix_sn(*)
-      INCLUDE 'SURFWATER.H'
-      INCLUDE 'RIVERNETWORK.H'
-      INCLUDE 'TRANSPSURF.H'
+      real*8   traflcel_mix(maxcel),surface_mix_sn(maxcel)
 C
       call init0r(maxcel,traflcel_mix)
       call init0r(maxcel,surface_mix_sn)

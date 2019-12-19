@@ -3042,7 +3042,7 @@ C
 C     
          CALL VCOPYR(NT,CNEW_SAV,CNEW)
          CALL VCOPYR(N,SW_SAV,SW)
-         IF (PONDING) THEN
+         IF (PONDING.and.TRANSP) THEN
             CALL MIXING_CORRECTION(NROW,NCOL,indcel,indcelwl,
      1           N,NT,NNOD,TETRA,nstr,NCELL,CELL,MIX_CORRECT,
      2           CNEW,CNNEW,PEL,PNODI,

@@ -16,7 +16,7 @@ C
       integer nrow,ncol
       integer icell,k,l,ncell,nnod,i,j,icell_coarse,m,n
       integer dostep,ncell_coarse,nonnull
-      integer cell(5,*),indcelwl(rowmax,*),cont(NNOD)
+      integer cell(5,maxcel),indcelwl(rowmax,colmax),cont(nodmax)
       real*8 delta_x,delta_y,pondnod(*)
       real*8 cellvalue(*),nodvalue(*),arenod(*)
       real*8 cellcoarse(*)

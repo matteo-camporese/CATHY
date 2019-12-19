@@ -19,7 +19,7 @@ C
       integer tp2d(*),triang(4,*),cell(5,*)
       integer indcel(rowmax,*)
       real*8  pondnod(*),cellcoarse(*),pondcell(*)
-      real*8  dem_map(rowmax,*),volume_node(nnod)
+      real*8  dem_map(rowmax,*),volume_node(nodmax)
       real*8  delta_x,delta_y,arenod(*)
 C
 c      do i=1,ncell

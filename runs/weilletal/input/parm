@@ -11,7 +11,7 @@
     2       500         1.0e-10          ISOLV  ITMXCG TOLCG
     0.01    .00001      10.   3600.0     DELTAT DTMIN  DTMAX  TMAX
     0.0       1.1       0.0        .5    DTMAGA DTMAGM DTREDS DTREDM
-    4        0          9
+    4        1          9
     1800. 
     3600.
     7200.
