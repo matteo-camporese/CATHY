@@ -3484,7 +3484,13 @@ c
      5           CNOLD,TIME,XT5C,TNOTIC,PRESC_TRA,QCAUCHY,POROS,
      6           KD,ALFAL,ALFAT,LMASSC,LHSC,COEF1C,
      7           COEF2C,CPUVEC,IPRT1,SUPDIFFUS,ATMACT)
+C
+C     Calculate the concentration in tetrahedra from concentration at nodess
+C    
+            CALL NODETOTETRA(N,NT,TETRA,CNEW,CNNEW)
+c
          END IF
+
 c           
 C----------------------------------------------------------------------
 C                 SUBSURFACE REACTION ...... ON ELEMENTS !!!
@@ -3493,9 +3499,9 @@ C LAURA LINEAR ADSORPTION AND FIRST ORDER DECAY
 cC        
       IF (REACFLAG) THEN
         DO I=1,NT
-           CNEW(I)=(KEL(I)*COLDOLD(I)*(1-PEL(I))*2.6           
+           CNEW(I)=(KEL(I)*COLDOLD(I)*(1-PEL(I))*GAMMAS        
      1             +CNEW(I)*PEL(I)*SWNEW(I))
-     2             /(PEL(I)*SWNEW(I)+KEL(I)*(1-PEL(I))*2.6)
+     2             /(PEL(I)*SWNEW(I)+KEL(I)*(1-PEL(I))*GAMMAS)
            CNEW(I)=CNEW(I)*exp(LEL(I)*DELTAT*(-1))
         END DO
 c
