@@ -3487,7 +3487,8 @@ c
 C
 C     Calculate the concentration in tetrahedra from concentration at nodess
 C    
-            CALL NODETOTETRA(N,NT,TETRA,CNEW,CNNEW)
+            CALL NODETOTETRA(N,NT,TETRA,CNEW,CNNEW,volu,volnod,
+     1                       pnodi,pel)
 c
          END IF
 
