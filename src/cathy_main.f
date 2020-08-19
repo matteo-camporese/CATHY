@@ -2731,7 +2731,7 @@ C ------------------------------------------
          IF (TRANSP) THEN            
 C
 C     SURFACE PARAMETERS
-            
+C           
             IF (SURF) CALL INIT_SR_TRA(NNOD,TRAFLNOD,TRAFLP,CONCNOD)
             DO I=1,NODMAX
                CONCNOD_PERDIR(I)=0.0d0               
@@ -2743,19 +2743,19 @@ C
 C     SUBSURFACE PARAMETERS
 C     concentrations
             CALL CONCINI_NODE(N,CNOLD)
-c            CALL vcopyr(N,CNNEW,CNOLD)
+            CALL VCOPYR(N,CNNEW,CNOLD)
             CALL NODETOTETRA(N,NT,TETRA,COLD,CNOLD,volu,volnod,
      1                       pnodi,pel)
 c concentration first adsorption equilibrium
-        IF (REACFLAG) THEN
-        DO I=1,NT
-           COLD(I)= COLD(I)*PEL(I)*SWNEW(I)
+            IF (REACFLAG) THEN
+               DO I=1,NT
+                  COLD(I)= COLD(I)*PEL(I)*SWNEW(I)
      2             /(PEL(I)*SWNEW(I)+KEL(I)*(1-PEL(I))*2)
-        END DO
+               END DO
+            END IF
 c
             CALL VCOPYR(NT,COLDOLD,COLD)
             CALL VCOPYR(NT,CNEW,COLD)
-      END IF
             CALL INIT0R(NT,CDIFF)
 C     flux and cflnumb
             CALL INIT0R(NT,FLUX)
@@ -2848,11 +2848,11 @@ CM          CALL VTKRIS3DF(NT,N,100,TETRA,0.0d0,PNEW,SW,UU,VV,
 CM   1           WW,X,Y,Z)
             CALL VTKRIS3D(NT,N,100,TETRA,PNEW,SW,
      1                    UU,VV,WW,X,Y,Z,KS,0.0d0,VTKF)
-            IF(TRANSP)THEN
+            IF (TRANSP) THEN
                CALL VTKRIS3DFC(NT,N,200,TETRA,0.0d0,CNEW,
      1              SW,X,Y,Z)
-               CALL VTKRIS3DFCSURF(NT,N,100,TETRA,0.0d0,CONCSURFVTK,
-     1              X,Y,Z)
+               CALL VTKRIS3DFCSURF(NT,N,100,TETRA,0.0d0,
+     1              CONCSURFVTK,X,Y,Z)
             END IF
          END IF
 c     IF (NR.GT.0) THEN
@@ -3725,10 +3725,15 @@ CM   1                 PNEW,SW,PONDNOD)
 CM             CALL DIAGN_OUTPUT(KPRT,NPRT,TIME,N,NNOD,NSTR,BASE,ZRATIO,
 CM   1                 Z,PNODI,ARENOD,VOLNOD,SW,PONDNOD,PNEW)
 CM          END IF
-c               CALL VTKRIS1(NTRI, NNOD,200+kprt,TRIANG,ATMACT,X,Y)
                IF ((IPRT.GE.2).AND.(VTKF.GT.0)) THEN
                   CALL  VTKRIS3D(NT,N,100+kprt,TETRA,PNEW,SW, 
      1                           UU,VV,WW,X,Y,Z,KS,TIME,VTKF)
+                  IF (TRANSP) THEN
+                    CALL VTKRIS3DFC(NT,N,200+kprt,TETRA,0.0d0,CNEW,
+     1                              SW,X,Y,Z)
+                    CALL VTKRIS3DFCSURF(NT,N,100+kprt,TETRA,0.0d0,
+     1                                  CONCSURFVTK,X,Y,Z)
+                  END IF
                END IF
 c              IF (NR.GT.0) THEN
 c                     WRITE(1001,*) TIME,(PNEW(CONTR(I)),I=1,NR)
@@ -3856,6 +3861,12 @@ C
          IF ((IPRT.GE.2).AND.(VTKF.GT.0)) THEN
             CALL VTKRIS3D(NT,N,100+kprt, TETRA,PNEW,SW, 
      1                    UU,VV,WW,X,Y,Z,KS,TIME,VTKF)
+            IF (TRANSP) THEN
+               CALL VTKRIS3DFC(NT,N,200+kprt,TETRA,0.0d0,CNEW,
+     1                         SW,X,Y,Z)
+               CALL VTKRIS3DFCSURF(NT,N,100+kprt,TETRA,0.0d0,
+     1                             CONCSURFVTK,X,Y,Z)
+            END IF
          END IF
 c        IF (NR.GT.0) THEN
 c               WRITE(1001,*) TIME,(PNEW(CONTR(I)),I=1,NR)
