@@ -43,10 +43,10 @@ C
          DO J=1,NZONE
             READ(IIN61,*) ALFAL(I,J),ALFAT(I,J),KD(I,J),LAMBDA(I,J)
             IF (KD(I,J).NE.0) THEN
-            REACFLAG=.TRUE.
+               REACFLAG=.TRUE.
             END IF
             IF (LAMBDA(I,J).NE.0) THEN
-            REACFLAG=.TRUE.
+               REACFLAG=.TRUE.
             END IF
          END DO
       END DO

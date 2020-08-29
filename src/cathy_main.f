@@ -2533,15 +2533,15 @@ C Read transport input files if traflag = 1
      2        DIFFUS,GAMMAS,IPARM,ALFAL,ALFAT,KD,LAMBDA,MIXPART,
      3        REACFLAG)
 C         
-         WRITE(*,*) ' -------------------------'
-         WRITE(*,*) ' SIMULATION WITH TRANSPORT'
-         WRITE(*,*) ' -------------------------'
-         WRITE(*,*) '------ Longitudinal Dispersion-------'
-         WRITE(*,*) (ALFAL(i,1),i=1,nstr)
-         write(*,*) '--------Transverse Dispersion--------'
-         WRITE(*,*) (ALFAT(i,1),i=1,nstr)
-         write(*,*) '--------- Diffusion -----------------'
-         WRITE(*,*) DIFFUS
+         WRITE(IOUT2,*) ' -------------------------'
+         WRITE(IOUT2,*) ' SIMULATION WITH TRANSPORT'
+         WRITE(IOUT2,*) ' -------------------------'
+         WRITE(IOUT2,*) '------ Longitudinal Dispersion-------'
+         WRITE(IOUT2,*) (ALFAL(i,1),i=1,nstr)
+         write(IOUT2,*) '--------Transverse Dispersion--------'
+         WRITE(IOUT2,*) (ALFAT(i,1),i=1,nstr)
+         write(IOUT2,*) '--------- Diffusion -----------------'
+         WRITE(IOUT2,*) DIFFUS
       END IF      
 C
 C  Inizialization of NUMRES. This command must be removed when the lake
@@ -2852,7 +2852,7 @@ CM   1           WW,X,Y,Z)
                CALL VTKRIS3DFC(NT,N,200,TETRA,0.0d0,CNEW,
      1              SW,X,Y,Z)
                CALL VTKRIS3DFCSURF(NT,N,100,TETRA,0.0d0,
-     1              CONCSURFVTK,X,Y,Z)
+     1              CNNEW,X,Y,Z)
             END IF
          END IF
 c     IF (NR.GT.0) THEN
@@ -3061,7 +3061,17 @@ C  calculated in SURF_ROUTE, and update PONDING flag
 C
          CALL PONDUPD(NNOD,PONDING,IFATM,PONDH_MIN,DELTAT,PONDNOD,
      1        ARENOD,ATMPOT,ATMACT,PNEW)
-      
+C
+C update of concentration for rainfall
+C
+         IF (TRANSP) THEN
+            IF (CDIFFUS.NE.0) THEN
+              CALL CONCUPD(NNOD,IFATM,IFATMP,DELTAT,PONDNOD,
+     1        ARENOD,ATMPOT,ATMACT,CONCNOD,ATMCONC,
+     2        CONCNODUPD)
+            END IF
+         END IF
+C     
       ELSE IF (.NOT. FL3D) THEN   
          CALL ROUTE(NROW,NCELL,TIPO_R,RESERVR,
      1        CELLS_R,N_HA,TIME,DELTATS)
@@ -3563,25 +3573,25 @@ C IF PONDED, MIXING OF SURFACE WATER WITH FIRST LAYER WATER
 C  
         CALL INIT0R(NNOD,source_mixing)
         IF (MIXPART.NE.0) THEN
-        IF (PONDING) THEN
-         CALL CONCUPD_MIXING(NNOD,N,NT,TETRA,PONDNOD,VOLNOD,PNODI,SW,
-     1     ARENOD,CONCNODUPD,CNNEW,CNEW,MIXPART,TP,PEL,VOLU,SWNEW,
-     2     DELTAT,SOURCE_MIXING,ATMACT,TRAFLNOD_FLOW,OVFLNOD,PONDNODP)
+           IF (PONDING) THEN
+             CALL CONCUPD_MIXING(NNOD,N,NT,TETRA,PONDNOD,VOLNOD,PNODI,
+     1       SW,ARENOD,CONCNODUPD,CNNEW,CNEW,MIXPART,TP,PEL,VOLU,SWNEW,
+     2       DELTAT,SOURCE_MIXING,ATMACT,TRAFLNOD_FLOW,OVFLNOD,PONDNODP)
 C
-         CALL nodetotetra_tra(N,NT,TETRA,nstr,CNEW,CNNEW,PEL,PNODI,VOLU,
-     1           VOLNOD,SWNEW,SW,TP,NNOD,COLD,CNOLD)
+             CALL nodetotetra_tra(N,NT,TETRA,nstr,CNEW,CNNEW,PEL,
+     1            PNODI,VOLU,VOLNOD,SWNEW,SW,TP,NNOD,COLD,CNOLD)
 C
-        END IF 
+           END IF 
         END IF  
 c     
-         CALL VCOPYR(NT,COLD,CNEW)
-         CALL VCOPYR(NT,CNEW_VTK,CNEW)
-         CALL VCOPYR(N,CNOLD,CNNEW)
-c         CALL VCOPYR(NT,COLDOLD,CNEW)
-         CALL VCOPYR(NT,SWOLD,SWNEW)
-         CALL VCOPYR(NT,UUOLD,UU)
-         CALL VCOPYR(NT,VVOLD,VV)
-         CALL VCOPYR(NT,WWOLD,WW)   
+        CALL VCOPYR(NT,COLD,CNEW)
+        CALL VCOPYR(NT,CNEW_VTK,CNEW)
+        CALL VCOPYR(N,CNOLD,CNNEW)
+c       CALL VCOPYR(NT,COLDOLD,CNEW)
+        CALL VCOPYR(NT,SWOLD,SWNEW)
+        CALL VCOPYR(NT,UUOLD,UU)
+        CALL VCOPYR(NT,VVOLD,VV)
+        CALL VCOPYR(NT,WWOLD,WW)   
 C   
         CALL VCOPYR(NNOD,CONCNOD_OLD,CONCNOD)
         CALL VCOPYR(NNOD,CONCNOD,CONCNODUPD)
@@ -3589,10 +3599,10 @@ C
 C CREATION OF CONCSURFVTK FROM CONCNODUPD
 
             DO I=1,NNOD
-            CONCSURFVTK(I)=CONCNODUPD(i)
+               CONCSURFVTK(I)=CONCNODUPD(I)
             END DO
             DO I=NNOD+1,N
-            CONCSURFVTK(I)=0.0d0
+               CONCSURFVTK(I)=0.0d0
             END DO
 C
       END IF
@@ -3729,10 +3739,10 @@ CM          END IF
                   CALL  VTKRIS3D(NT,N,100+kprt,TETRA,PNEW,SW, 
      1                           UU,VV,WW,X,Y,Z,KS,TIME,VTKF)
                   IF (TRANSP) THEN
-                    CALL VTKRIS3DFC(NT,N,200+kprt,TETRA,0.0d0,CNEW,
+                    CALL VTKRIS3DFC(NT,N,200+kprt,TETRA,TIME,CNEW,
      1                              SW,X,Y,Z)
-                    CALL VTKRIS3DFCSURF(NT,N,100+kprt,TETRA,0.0d0,
-     1                                  CONCSURFVTK,X,Y,Z)
+                    CALL VTKRIS3DFCSURF(NT,N,100+kprt,TETRA,TIME,
+     1                                  CNNEW,X,Y,Z)
                   END IF
                END IF
 c              IF (NR.GT.0) THEN
@@ -3862,10 +3872,10 @@ C
             CALL VTKRIS3D(NT,N,100+kprt, TETRA,PNEW,SW, 
      1                    UU,VV,WW,X,Y,Z,KS,TIME,VTKF)
             IF (TRANSP) THEN
-               CALL VTKRIS3DFC(NT,N,200+kprt,TETRA,0.0d0,CNEW,
+               CALL VTKRIS3DFC(NT,N,200+kprt,TETRA,TIME,CNEW,
      1                         SW,X,Y,Z)
-               CALL VTKRIS3DFCSURF(NT,N,100+kprt,TETRA,0.0d0,
-     1                             CONCSURFVTK,X,Y,Z)
+               CALL VTKRIS3DFCSURF(NT,N,100+kprt,TETRA,TIME,
+     1                             CNNEW,X,Y,Z)
             END IF
          END IF
 c        IF (NR.GT.0) THEN

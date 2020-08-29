@@ -10,7 +10,7 @@ cc u e v variabili nodali in questo caso pressione e saturazione
          CHARACTER*15 file_vtk
 
          field=1 
-         write(nome,'(a4,i3,a4)') 'surf',iunit, '.vtk'
+         write(nome,'(a4,i3,a4)') 'cnod',iunit,'.vtk'
          file_vtk='vtk'//'/'//nome
          open(iunit, file=file_vtk)
 c
@@ -50,11 +50,13 @@ ccc per avere il tempo nei file
 
          write(iunit,82)  nnode
  82      format('POINT_DATA', 1x,i8, 
-     1    /, 'SCALARS conc_surface float',
+     1    /, 'SCALARS conc_node float',
      2    /, 'LOOKUP_TABLE default' )
          do i=1,nnode
-          write(iunit,*) u(i)
+          write(iunit,102) u(i)
          end do
+ 102     format(f16.7)
+
 c         write(iunit,83) 
 c 83      format('SCALARS saturation float'
 c     1    /, 'LOOKUP_TABLE default' )

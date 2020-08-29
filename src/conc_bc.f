@@ -83,11 +83,11 @@ C     RAINFALL/INFILTRATION CASE
               GO TO 500
 C     EVAPORATION/INFILTRATION CASE         
             ELSEIF ((ATMPOT(I) .LT. 0.) .AND. (ATMACT(I) .GE. 0.)) THEN
-              WRITE(*,*) 'IMPOSSIBLE CASE AT THE NODE : ',I
+CM            WRITE(*,*) 'IMPOSSIBLE CASE AT THE NODE : ',I
               GO TO 500
 C     EVAPORATION/EXFILTRATION CASE         
             ELSEIF ((ATMPOT(I) .LT. 0.) .AND. (ATMACT(I) .LT. 0.)) THEN
-               write(*,*) 'UNLIKELY CASE - EXTREME EVAPO'              
+CM             write(*,*) 'UNLIKELY CASE - EXTREME EVAPO'              
               GO TO 500
             END IF
 C

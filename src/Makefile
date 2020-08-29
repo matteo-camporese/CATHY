@@ -88,6 +88,7 @@ OBJS          = adrstn.o \
 		closio.o \
 		conc_bc.o \
 		concini_node.o \
+		concupd.o \
 		concupd_mixing.o \
 		conf_fac.o \
 		connection_new.o \
@@ -361,6 +362,7 @@ SRCS	      = adrstn.f \
 		closio.f \
 		conc_bc.f \
 		concini_node.f \
+		concupd.f \
 		concupd_mixing.f \
 		conf_fac.f \
 		connection_new.f \
@@ -659,6 +661,7 @@ chvelo.o: CATHY.H SOILCHAR.H
 chvelop.o: CATHY.H SOILCHAR.H
 closio.o: IOUNITS.H
 concini_node.o: IOUNITS.H
+concupd.o: IOUNITS.H
 connection_new.o: CATHY.H
 conver.o: CATHY.H NORMVL.H IOUNITS.H
 datin.o: CATHY.H IOUNITS.H SOILCHAR.H SURFWATER.H RIVERNETWORK.H  

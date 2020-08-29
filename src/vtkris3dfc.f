@@ -9,15 +9,15 @@ c         real*8  vx(*),vy(*),vz(*)
          character*15 nome,file_vtk
 
          field=1 
-         write(nome,'(a4,i3,a4)') 'conc',iunit, '.vtk'
+         write(nome,'(a4,i3,a4)') 'cele',iunit, '.vtk'
          file_vtk='vtk'//'/'//nome
          open(iunit, file=file_vtk)
        
-         do i=1,ntetra
-            if(u(i).lt.1.E-4)THEN
-               u(i)=0.0d0
-            end if 
-         end do  
+c        do i=1,ntetra
+c           if(u(i).lt.1.E-20)THEN
+c              u(i)=0.0d0
+c           end if 
+c        end do  
          write(iunit,78) 
  78      FORMAT('# vtk DataFile Version 2.0',
      1     /,'3D Unstructured Grid of Linear Triangles', 
@@ -57,23 +57,24 @@ c         real*8  vx(*),vy(*),vz(*)
      1    /, 'SCALARS saturation float',
      2    /, 'LOOKUP_TABLE default' )
          do i=1,nnode
-          write(iunit,*) v(i)
+          write(iunit,102) v(i)
          end do
 
-c         write(iunit,83) nnode 
-c 83      format('SCALARS saturation float'
-c     1    /, 'LOOKUP_TABLE default' )
+c         write(iunit,83) 
+c 83      format('SCALARS concentration float',
+c     2    /, 'LOOKUP_TABLE default' )
 c         do i=1,nnode
-c          write(iunit,*) v(i)
+c          write(iunit,*) u(i)
 c         end do
 
          write(iunit,85) ntetra
  85      format('CELL_DATA', 1x,i8, 
-     1    /,'SCALARS concentration float',
+     1    /,'SCALARS conc_ele float',
      1    /, 'LOOKUP_TABLE default' )
          do i=1,ntetra
-             write(iunit,*) u(i)
+             write(iunit,102) u(i)
          end do
+ 102     format(f16.7)
 
          close(iunit)
          return
