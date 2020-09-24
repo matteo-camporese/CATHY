@@ -2574,21 +2574,21 @@ C Connection needed for finite volume - advective transport
       WRITE(IOUT2,*)'NFACE =',NFACE
 C     
 c     CARLOTTA TEMPORANEO UPDATE ARENOD
-         DO I=1,NNOD
-            ARENOD(I)=0.0d0
-         END DO 
-         DO I=1,NNOD
-            DO J=1,NODE_FACECOUNT(I)
-               FACCIA=NODE_FACEIDS(I,J)
-               IF(PLIST(2,FACCIA).EQ.0)THEN
-                  IF((ISIDE(1,FACCIA).LE.NNOD).AND.
-     1                 (ISIDE(2,FACCIA).LE.NNOD).AND.
-     1                 (ISIDE(3,FACCIA).LE.NNOD))THEN
-                     ARENOD(I)=ARENOD(I)+AREFACE(FACCIA)/3.0d0
-                  END IF
-               END IF 
-            END DO 
-         END DO
+CM       DO I=1,NNOD
+CM          ARENOD(I)=0.0d0
+CM       END DO 
+CM       DO I=1,NNOD
+CM          DO J=1,NODE_FACECOUNT(I)
+CM             FACCIA=NODE_FACEIDS(I,J)
+CM             IF(PLIST(2,FACCIA).EQ.0)THEN
+CM                IF((ISIDE(1,FACCIA).LE.NNOD).AND.
+CM   1                 (ISIDE(2,FACCIA).LE.NNOD).AND.
+CM   1                 (ISIDE(3,FACCIA).LE.NNOD))THEN
+CM                   ARENOD(I)=ARENOD(I)+AREFACE(FACCIA)/3.0d0
+CM                END IF
+CM             END IF 
+CM          END DO 
+CM       END DO
 c     C     calculation of SURFAR
          DO I=1,NT
             DO J=1,4
@@ -2775,6 +2775,9 @@ c Calcultation Mass0 with adsorbed part and solute part
         MASS0=0.0d0
         MASSOUTTOTADV=0.0d0
         MASSINTOTADV=0.0d0
+CM In and out mass due to dispersion is not computed yet
+        MASSOUTTOTDISP=0.0d0
+        MASSINTOTDISP=0.0d0
         DO I=1,NT
            MASS0=MASS0 + KEL(I)*CNEW(I)*VOLU(I)*(1-PEL(I))*2
      2             +CNEW(I)*VOLU(I)*PEL(I)
@@ -2804,8 +2807,8 @@ c     initialize dirichlet boundary condition for transport
      3           ACONTP_TRA)
             IF (ANP_TRA .GT. 0) THEN
                CALL DIRORNEU_FACE(ANP_TRA,ACONTP_TRA,PRESC_TRA,NFACE,
-     1              PLIST,ISIDE,NPFA_TRA,CONTPFA_TRA,PRESCFA_TRA)          
-               CALL BOUNDIR(NFACE,NPFA_TRA,CONTPFA_TRA,PUNTDIR)            
+     1              PLIST,ISIDE,NPFA_TRA,CONTPFA_TRA,PRESCFA_TRA)
+               CALL BOUNDIR(NFACE,NPFA_TRA,CONTPFA_TRA,PUNTDIR)
             END IF     
 
             DO I=1,NNOD
@@ -3029,6 +3032,7 @@ C
             TRAFLNOD(I)=(TRAFLNOD_FLOW(I)+SOURCE_mixing(i))/deltat
          END DO
 C     
+cm       write(*,*)'Entro SURF_FLOWTRA'
          CALL SURF_FLOWTRA(NCELL,NNOD,NROW,NCOL,NTRI,DOSTEP,NUMRES,
      1        NCELL_COARSE,NCELNL,CELL,
      2        INDCEL,INDCELWL,TIPO_R,RESERVR,DEM_MAP,
@@ -3038,16 +3042,19 @@ C
      6        OVFLCEL,PONDCEL,TRAFLNOD,TRAFLCEL,CONCNOD,
      7        CONCCEL,N_HA,NSURF,NSURFT,NSURFT_TB,TRANSP,
      8        SOURCE_MIXING,MIX_CORRECT,SURFACE_MIX_SN)
+cm       write(*,*)'Esco SURF_FLOWTRA'
 C
 C     
          CALL VCOPYR(NT,CNEW_SAV,CNEW)
          CALL VCOPYR(N,SW_SAV,SW)
          IF (PONDING.and.TRANSP) THEN
+cm       write(*,*)'Entro MIXCORR'
             CALL MIXING_CORRECTION(NROW,NCOL,indcel,indcelwl,
      1           N,NT,NNOD,TETRA,nstr,NCELL,CELL,MIX_CORRECT,
      2           CNEW,CNNEW,PEL,PNODI,
      3           VOLU,VOLNOD,SWNEW,SW,TP,COLD,CNOLD)
             CALL VCOPYR(NT,COLD,CNEW)
+cm       write(*,*)'Esco MIXCORR'
          END IF
          
          CALL TIM(PCVEC1,2)
@@ -4042,10 +4049,10 @@ c 2060 FORMAT(7X,I8,3(1PE15.6),i6,1pe15.6)
      A       ' (Vi+Vo-Ds)        (%)             ABS(MBE)')
  1222 FORMAT('#INITIAL MASS OF SOLUTE IN THE SUBSURFACE = ',1PE13.5,
      1     /,'#NSTEP       DELTAT         TIME  NADV   ',
-     2       '       MASST         DSMASS      MASSINADV  ',
-     3       '   MASSINDISP     MASSOUTADV    MASSOUTDISP    ',
-     4       '     MINTOT     MASSOUTTOT         MERRAS        CMERRAS',
-     5       '      MASSSURF')
+     2       '      MASST        DSMASS     MASSINADV  ',
+     3       '  MASSINDISP    MASSOUTADV   MASSOUTDISP    ',
+     4       '    MINTOT    MASSOUTTOT        MERRAS       CMERRAS',
+     5       '     MASSSURF')
  1223 FORMAT('#INITIAL MASS OF SOLUTE IN THE SUBSURFACE = ',1PE13.5)
  1225 FORMAT(/,5X,'INITIAL VOLUME OF WATER IN SUBSURFACE   = ',1PE13.5)
  1230 FORMAT('#NSTEP    DELTAT      TIME       ',
@@ -4053,7 +4060,7 @@ c 2060 FORMAT(7X,I8,3(1PE15.6),i6,1pe15.6)
  1232 FORMAT('#TIME      <--- WTDEPTH(NODVP(I)), I=1,2,...,NUMVP --->')
  1240 FORMAT(I6,2(1PE13.6),I6,1PE10.3,2(1PE13.6),2(1PE13.5),2(1PE10.3),
      1       7(1PE11.3),1PE10.3)
- 1242 FORMAT(I6,2(1PE13.6),I6,12(1PE14.6))
+ 1242 FORMAT(I6,2(1PE13.6),I6,12(1PE14.5E3))
  1245 FORMAT(I6,12(1PE13.5))
  1250 FORMAT( /,'  TOTAL NUMBER OF BACK-STEPPING OCCURRENCES',
      1          '      : ',I6,

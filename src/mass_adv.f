@@ -43,12 +43,12 @@ c           END IF
       END DO
 C Condition bidouille, mais sinon il y a un
 C problème d'écriture dans les fichiers de sortie
-      IF (MASSOUTLOC.LE.1.0D-99) THEN 
-      MASSOUTLOC=0.0d0
-      END IF
-      IF (MASSINLOC.LE.1.0D-99) THEN 
-      MASSINLOC=0.0d0
-      END IF     
+C     IF (MASSOUTLOC.LE.1.0D-99) THEN 
+C     MASSOUTLOC=0.0d0
+C     END IF
+C     IF (MASSINLOC.LE.1.0D-99) THEN 
+C     MASSINLOC=0.0d0
+C     END IF     
 C
 c      SFMASSOUTTOT=SFMASSOUTTOT+SFMASSOUT
       MASSOUTTOTADV=MASSOUTTOTADV+MASSOUTLOC

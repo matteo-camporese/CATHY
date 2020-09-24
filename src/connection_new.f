@@ -185,7 +185,7 @@ c
            s1=(x1*(y2-y3)-y1*(x2-x3)+(x2*y3-y2*x3))
            s2=(x1*(z2-z3)-z1*(x2-x3)+(x2*z3-z2*x3))
            s3=(y1*(z2-z3)-z1*(y2-y3)+(y2*z3-z2*y3))
-           AREFACE(I)=0.5*SQRT(s1*s1+s2*s2+s3*s3)
+           AREFACE(I)=0.5d0*DSQRT(s1*s1+s2*s2+s3*s3)
       END DO 
 
 C COMPUTE THE NODE_ELEMENT CONNECTIVITIES

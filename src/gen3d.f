@@ -110,8 +110,8 @@ C     END DO
          CALL CLOSIO
          STOP
       END IF
-c     close(99)
-c     close(98)
+      close(99)
+      close(98)
 C
       RETURN
  1000 FORMAT(//,' IPRT1=3: Program terminating after output of X, Y, Z',

@@ -25,8 +25,10 @@ C
       INTEGER   TETRA(5,*),TP(*)
       REAL*8    CNEW(*),CNNEW(*),volu(*),volnod(*),pel(*),pnodi(*)
       real*8    sw(*),swnew(*),cold(*),CNOLD(*)
-      real*8    MIX_CORRECT_node(nnod),MIX_CORRECT(*)
-      real*8    CNNEW_NEW(NNOD),MIX_CORRECT_sub(ncell)
+cm    real*8    MIX_CORRECT_node(nnod),MIX_CORRECT(*)
+cm    real*8    CNNEW_NEW(NNOD),MIX_CORRECT_sub(ncell)
+      real*8    MIX_CORRECT_node(NODMAX),MIX_CORRECT(*)
+      real*8    CNNEW_NEW(NODMAX),MIX_CORRECT_sub(MAXCEL)
 
 
       CALL INIT0R(NNOD,CNNEW_new)
