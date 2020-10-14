@@ -3052,11 +3052,9 @@ C
 C update of concentration for rainfall
 C
          IF (TRANSP) THEN
-            IF (CDIFFUS.NE.0) THEN
               CALL CONCUPD(NNOD,IFATM,IFATMP,DELTAT,PONDNOD,
      1        ARENOD,ATMPOT,ATMACT,CONCNOD,ATMCONC,
      2        CONCNODUPD)
-            END IF
          END IF
 C     
       ELSE IF (.NOT. FL3D) THEN   
