@@ -24,7 +24,7 @@ C
       REAL*8    CNNEW(*),CONCNODUPD(*),PONDNOD(*)
 C      
 
-      PARAMETER (ZERO = 0.0)
+      PARAMETER (ZERO = 0.0D0)
      
       NQ_TRA = 0
 C     

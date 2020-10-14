@@ -25,8 +25,8 @@ C
       supcfl= surfar(1)*volur(1)*
      1        dsqrt(vx(1)**2+vy(1)**2+vz(1)**2)
       do j=2,ntetra
-      supcflt= surfar(j)*volur(j)*
-     1        dsqrt(vx(j)**2+vy(j)**2+vz(j)**2)
+         supcflt= surfar(j)*volur(j)*
+     1            dsqrt(vx(j)**2+vy(j)**2+vz(j)**2)
          if (supcflt.gt.supcfl) then
             supcfl=supcflt
             cfltetra=j

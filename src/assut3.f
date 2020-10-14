@@ -62,7 +62,8 @@ C
             END DO
          END DO
         END DO
-        write(*,*) coef2C(300)
+c       write(*,*) coef2C(300)
+        write(*,*) supdiffus
          RETURN
          END
 

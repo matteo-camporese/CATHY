@@ -17,7 +17,7 @@ cxcx  real*8   prec(nterm),sysmat(nterm)
       real*8   prec(*),sysmat(*)
       real*8   a,zero
 
-      parameter (zero=0.0)
+      parameter (zero=0.0d0)
 
       do k=1,nterm
          prec(k) = zero

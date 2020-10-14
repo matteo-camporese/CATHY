@@ -270,6 +270,7 @@ OBJS          = adrstn.o \
 		tpnodi2d.o \
 		transfer_f3d_surf.o \
 		transfer_surf_f3d.o \
+                transpmb.o \
 		triangoli.o \
 		tvd_durlo.o \
 		ucdnew.o \
@@ -296,7 +297,7 @@ OBJS          = adrstn.o \
 
 PRINT         = pr
 
-PROGRAM       = cathy_transp
+PROGRAM       = cathy_ft
 
 SRCS	      = adrstn.f \
 		altezze.f \
@@ -544,6 +545,7 @@ SRCS	      = adrstn.f \
 		tpnodi2d.f \
 		transfer_f3d_surf.f \
 		transfer_surf_f3d.f \
+                transpmb.f \
 		triangoli.f \
 		tvd_durlo.f \
 		ucdnew.f \
@@ -761,6 +763,7 @@ tpnodi.o: CATHY.H IOUNITS.H SOILCHAR.H
 tpnodi2d.o: CATHY.H
 transfer_f3d_surf.o: CATHY.H
 transfer_surf_f3d.o: CATHY.H
+transpmb.o: CATHY.H
 triangoli.o: CATHY.H
 tvd_durlo.o: CATHY.H
 upd_facetype.o: CATHY.H
