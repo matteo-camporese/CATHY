@@ -15,11 +15,11 @@ C
       INTEGER      IUNIT,IOUNI1,IPRT1,NSTR,HTIBC,NNOD
       INTEGER      ANBC,NBCMAX
       INTEGER      NB2C(3),NBFC(3),NBC(3)
-      INTEGER      ABCNOD(*)
-      INTEGER      BCNOD(3,*)
+      INTEGER      ABCNOD(NBCMAX)
+      INTEGER      BCNOD(3,NBCMAX)
       REAL*8       TIMEIN,SLOPE,TIM32R,TIMW1
       REAL*8       TIME,DELTAT
-      REAL*8       BCTIM(*),BCINP(3,*),BC(*)
+      REAL*8       BCTIM(3),BCINP(3,NBCMAX),BC(NBCMAX)
       CHARACTER*22 BCTYPE
 C     INCLUDE 'CATHY.H'
 C
@@ -82,7 +82,7 @@ C           SLOPE=(BCINP(3,I) - BCINP(2,I))*TIM32R
 C           BC(I)=BCINP(2,I) + SLOPE*TIMW1
             BC(I)=BCINP(2,I)
             ABCNOD(I)=BCNOD(2,I)
-            END DO
+         END DO
       ELSE
          ANBC=NBC(3)
          DO I=1,ANBC

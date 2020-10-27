@@ -106,11 +106,11 @@ c            CONCNODUPD(I) = 0.0d0
       END DO      
 C     
 
-        IF (ANP_TRA.GT.0) THEN
-            DO I=1,ANP_TRA
-            CONCNODBC(CONTP_TRA(I))=PRESC_TRA(CONTP_TRA(I))
-            END DO
-        END IF
+      IF (ANP_TRA.GT.0) THEN
+          DO I=1,ANP_TRA
+             CONCNODBC(CONTP_TRA(I))=PRESC_TRA(CONTP_TRA(I))
+          END DO
+      END IF
 
 C     
       RETURN  

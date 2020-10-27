@@ -24,6 +24,7 @@ C
       cfltetra=1
       supcfl= surfar(1)*volur(1)*
      1        dsqrt(vx(1)**2+vy(1)**2+vz(1)**2)
+c     write(999,*)surfar(1),volur(1)
       do j=2,ntetra
          supcflt= surfar(j)*volur(j)*
      1            dsqrt(vx(j)**2+vy(j)**2+vz(j)**2)
@@ -31,6 +32,7 @@ C
             supcfl=supcflt
             cfltetra=j
          end if   
+c     write(999,*)surfar(j),volur(j)
       end do
       if (nadvfl.eq.1) then
          deltatadv=deltat/float(nadv)
@@ -47,7 +49,8 @@ C
       if (supdiffus.eq.0.0d0) then
          pecnumb=1.e+20
       else
-         pecnumb= cflnumb/(supdiffus*deltatadv)
+         pecnumb = cflnumb/
+     *            (supdiffus*deltatadv*(surfar(1)**2.0d0)*volur(1))
       end if
          
       return 

@@ -2,8 +2,8 @@ C
 C**************************  CAUCHYUPD ************************************
 C
 C procedure used to calculate the total Cauchy BC imposed at land surface 
-C for subsurface transport. The total QCAUCHY BC is calculated from flow results
-C surface concentration and atmospheric cauchy BC for transport
+C for subsurface transport. The total QCAUCHY BC is calculated from flow 
+C results surface concentration and atmospheric cauchy BC for transport
 C
 C***********************************************************************
 C
@@ -139,6 +139,8 @@ C TO BE DETERMINED!!!!!!
          END IF
       END IF
  500  CONTINUE         
+cm    WRITE(222,9070)I,IFATM(I),IFATMP(I),ATMPOT(I),ATMACT(I),
+cm   1            ATMCONC(I),CONCNODUPD(I)
       END DO
 C     
       
@@ -163,4 +165,5 @@ C
      1         'rainfall conditions becomes air dry ',
      2       /,'  (ATMPOT = ',1PE12.5,')',
      3       /,'  (TIME=',1PE8.2,', DELTAT=',1PE8.2,')')
+c9070 FORMAT(I6,I6,I6,4(1PE12.5))
       END

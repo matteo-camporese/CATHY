@@ -2753,32 +2753,32 @@ c     velocities at tetra
             CALL VCOPYR(NT,WWOLD,WW)            
 c     
 C CALCULATE THE MASS INITIALLY STORED IN THE SYSTEM 
-             CALL MASSCAL(NT,MASS0,COLD,
-     1            SWOLD,PEL,VOLU)
+            CALL MASSCAL(NT,MASS0,COLD,
+     1                   SWOLD,PEL,VOLU)
 c Calcultation Mass0 with adsorbed part and solute part
-        MASS0=0.0d0
-        MASSOUTTOTADV=0.0d0
-        MASSINTOTADV=0.0d0
+            MASS0=0.0d0
+            MASSOUTTOTADV=0.0d0
+            MASSINTOTADV=0.0d0
 CM In and out mass due to dispersion is not computed yet
-        MASSOUTTOTCUM=0.0d0
-        MASSINTOTCUM=0.0d0
-        DO I=1,NT
-           MASS0=MASS0 + KEL(I)*CNEW(I)*VOLU(I)*(1-PEL(I))*2
-     2             +CNEW(I)*VOLU(I)*PEL(I)
-        END DO
-        WRITE(IOUT80,1222) MASS0
-        WRITE(IOUT81,1223) MASS0
-        WRITE(IOUT81,1543)
-        WRITE(IOUT81,1541)(I,I=1,NZONE),(I,I=1,NZONE),(I,I=1,NZONE)
+            MASSOUTTOTCUM=0.0d0
+            MASSINTOTCUM=0.0d0
+            DO I=1,NT
+               MASS0=MASS0 + KEL(I)*CNEW(I)*VOLU(I)*(1-PEL(I))*2
+     2                 +CNEW(I)*VOLU(I)*PEL(I)
+            END DO
+            WRITE(IOUT80,1222) MASS0
+            WRITE(IOUT81,1223) MASS0
+            WRITE(IOUT81,1543)
+            WRITE(IOUT81,1541)(I,I=1,NZONE),(I,I=1,NZONE),(I,I=1,NZONE)
 C
 C Initialisation des variables ajoutées par Laura (mélange couplage)
 C
-        CALL INIT0R(NNOD,traflnod)
-        CALL INIT0R(NNOD,traflnod_flow)
-        CALL INIT0R(NNOD,source_mixing)
-        CALL INIT0R(NNOD,CONCNODUPD)
-        CALL INIT0R(NMAX,CONCSURFVTK)
-        CALL INIT0R(NCELL,MIX_CORRECT)
+           CALL INIT0R(NNOD,traflnod)
+           CALL INIT0R(NNOD,traflnod_flow)
+           CALL INIT0R(NNOD,source_mixing)
+           CALL INIT0R(NNOD,CONCNODUPD)
+           CALL INIT0R(NMAX,CONCSURFVTK)
+           CALL INIT0R(NCELL,MIX_CORRECT)
 c
 c     atmospheric BC for transport
            CALL ATMONE_TRA(NNOD,CAUSPATM,CAUTIATM,IETOCAU,TIME,DELTAT,
@@ -2789,18 +2789,18 @@ c     initialize dirichlet boundary condition for transport
      1           IPRT1,NDIR_TRA,NDIRC_TRA,NP_TRA,NSTR,HTIDIR_TRA,TIME,
      2           DELTAT,CTIM,CINP,CONTP_TRA,PRESC_TRA,ANP_TRA,
      3           ACONTP_TRA)
-            IF (ANP_TRA .GT. 0) THEN
-               CALL DIRORNEU_FACE(ANP_TRA,ACONTP_TRA,PRESC_TRA,NFACE,
-     1              PLIST,ISIDE,NPFA_TRA,CONTPFA_TRA,PRESCFA_TRA)
-               CALL BOUNDIR(NFACE,NPFA_TRA,CONTPFA_TRA,PUNTDIR)
-            END IF     
+CM          IF (ANP_TRA .GT. 0) THEN
+CM             CALL DIRORNEU_FACE(ANP_TRA,ACONTP_TRA,PRESC_TRA,NFACE,
+CM   1              PLIST,ISIDE,NPFA_TRA,CONTPFA_TRA,PRESCFA_TRA)
+CM             CALL BOUNDIR(NFACE,NPFA_TRA,CONTPFA_TRA,PUNTDIR)
+CM          END IF     
 
             DO I=1,NNOD
                IFCONC(I) = 0
             END DO
 C     
             DO I=1,ANP_TRA
-               IFCONC(ACONTP(I)) = -1
+               IFCONC(ACONTP_TRA(I)) = -1
             END DO
 C               
          END IF
@@ -2812,7 +2812,7 @@ C
 C  recharge calculation at initial conditions
 C
          CALL RECHARGE(NNOD,NSTR,WNOD,ARENOD,PTIMEP,TIME,DELTAT,RECFLOW,
-     1              RECVOL,RECNOD)
+     1                 RECVOL,RECNOD)
 C  
 C  detailed output at initial conditions
 C
@@ -2959,16 +2959,16 @@ C
      1           IPRT1,NDIR_TRA,NDIRC_TRA,NP_TRA,NSTR,HTIDIR_TRA,TIME,
      2           CTIM,CINP,CONTP_TRA,PRESC_TRA,ANP_TRA,
      3           ACONTP_TRA)
-            CALL DIRORNEU_FACE(ANP_TRA,ACONTP_TRA,PRESC_TRA,NFACE,
-     1           PLIST,ISIDE,NPFA_TRA,CONTPFA_TRA,PRESCFA_TRA)
-            CALL BOUNDIR(NFACE,NPFA_TRA,CONTPFA_TRA,PUNTDIR)  
+CM          CALL DIRORNEU_FACE(ANP_TRA,ACONTP_TRA,PRESC_TRA,NFACE,
+CM   1           PLIST,ISIDE,NPFA_TRA,CONTPFA_TRA,PRESCFA_TRA)
+CM          CALL BOUNDIR(NFACE,NPFA_TRA,CONTPFA_TRA,PUNTDIR)  
             
             DO I=1,NNOD
                IFCONC(I) = 0
             END DO
 C     
             DO I=1,ANP_TRA
-               IFCONC(ACONTP(I)) = -1
+               IFCONC(ACONTP_TRA(I)) = -1
             END DO
 C     
          END IF
@@ -3313,14 +3313,18 @@ C
 C     SET BC FOR TRANSPORT
 C     
 C ADVECTION ONLY - COUPLING BASED ON DIRICHLET
-           CALL CONC_BC(NNOD,IFATM,IFATMP,DELTAT,PONDNOD,
-     1     PONDNODP,ARENOD,ATMPOT,ATMACT,CONCNOD,CONCNOD_OLD,ATMCONC,
-     2     CONCNODBC,CNNEW,ACONTP_TRA,PRESC_TRA,ANP_TRA,CONCNODUPD)
+         CALL CONC_BC(NNOD,IFATM,IFATMP,DELTAT,PONDNOD,
+     1   PONDNODP,ARENOD,ATMPOT,ATMACT,CONCNOD,CONCNOD_OLD,ATMCONC,
+     2   CONCNODBC,CNNEW,ACONTP_TRA,PRESC_TRA,ANP_TRA,CONCNODUPD)
+C
          IF (CDIFFUS .NE. 0) THEN 
 C ADVECTION + DIFFUSION / COUPLING BASED ON CAUCHY - SYLVAIN POST-DOC
            CALL CAUCHYUPD(NNOD,NQ_TRA,CONTQ_TRA,QCAUCHY,IFATM,IFCONC,
      1     ATMPOT,ATMACT,OVFLNOD,PNEW,CONCNOD,DELTAT,ATMCONC,
      2     ARENOD,CNNEW,IFATMP,PONDNOD,CONCNODUPD)
+CM         write(111,*)(ARENOD(I),I=1,NNOD)
+CM         write(222,*)(IFATM(I),I=1,NNOD)
+CM         write(333,*)(QCAUCHY(I),I=1,NNOD)
          END IF
 C     
 C Calculation of SWNEW for each element from the results of FLOW3D SW
@@ -3331,7 +3335,9 @@ C
          CALL CFLPECNUMBER(NT,DELTATADV,VOLUR,SURFAR,UUOLD,VVOLD,WWOLD,
      1        SUPDIFFUS,CFLINP,CFLNUMB,PECNUMB,CFLTETRA,NADV,NADVFL,
      2        DELTAT)
-         
+         WRITE(IOUT2,*)'SUPDIFFUS = ',SUPDIFFUS
+         WRITE(IOUT2,*)'CFLNUMB = ',CFLNUMB
+         WRITE(IOUT2,*)'PECNUMB = ',PECNUMB
          TIMEAUX = TIME - DELTAT
          if (cflnumb.eq.0.d0) go to 350
 
@@ -3577,8 +3583,7 @@ C
         CALL VCOPYR(NNOD,CONCNOD_OLD,CONCNOD)
         CALL VCOPYR(NNOD,CONCNOD,CONCNODUPD)
 
-C CREATION OF CONCSURFVTK FROM CONCNODUPD
-
+C CREATION OF CONCSURFVTK FROM CONCNODUPD 
             DO I=1,NNOD
                CONCSURFVTK(I)=CONCNODUPD(I)
             END DO

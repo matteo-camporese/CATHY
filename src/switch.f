@@ -21,11 +21,11 @@ C
       REAL*8    PNEW(*),OVFLNOD(*)
       INCLUDE  'IOUNITS.H'
       INCLUDE  'SOILCHAR.H'
-      PARAMETER (ZERO = 0.0)
+      PARAMETER (ZERO = 0.0d0)
 C
       PONDING = .FALSE.
 
-Cm    write(99,*)'nodo atmpot       atmact       pondnod      pnew',
+cm    write(99,*)'nodo atmpot       atmact       pondnod      pnew',
 cm   1'         pl            ifatm'
       DO I=1,NNOD
          IF (IFATM(I) .EQ. -1) THEN
@@ -35,6 +35,7 @@ cc            PONDING = .FALSE.
          END IF
 C
          ATMDIF = ATMPOT(I) - ATMACT(I)
+         IF (DABS(ATMDIF).LT.1.0D-12) ATMDIF=ZERO
          PL = PONDNOD(I) + (ATMDIF * DELTAT / ARENOD(I))
 cm       if (i.eq.264) then
 cm          write(666,*) 'prima',time,atmpot(i),atmact(i),pl,pnew(i),
@@ -43,7 +44,7 @@ cm       end if
 cm       write(99,1000) i,atmpot(i),atmact(i),
 cm   1                              pondnod(i),pnew(i),pl,
 cm   2                              ifatm(i)
-cm 1000 FORMAT(i4,5e13.5,i4)
+c1000 FORMAT(i4,5e13.5,i4)
          IF (IFATM(I) .EQ. 2) THEN
             IF (ATMPOT(I) .GE. ZERO) THEN
                IF (ATMACT(I) .GE. ZERO) THEN

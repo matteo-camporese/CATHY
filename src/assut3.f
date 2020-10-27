@@ -1,4 +1,4 @@
-        subroutine ASSUT3(NT,NTRI3,TETRA,IP4,TETJAC,DIFFUS,GAMMAS,
+       subroutine ASSUT3(NT,NTRI3,TETRA,IP4,TETJAC,DIFFUS,GAMMAS,
      1            X,Y,Z,UU,VV,WW,SWE,VOLU,VOLUR,COEF1C,
      2            COEF2C,POROS,KD,ALFAL,ALFAT,LMASSC,supdiffus)
        IMPLICIT NONE
@@ -61,11 +61,11 @@ C
                END IF
             END DO
          END DO
-        END DO
+       END DO
 c       write(*,*) coef2C(300)
-        write(*,*) supdiffus
-         RETURN
-         END
+c       write(*,*) supdiffus
+       RETURN
+       END
 
 
 
