@@ -35,7 +35,7 @@ cc            PONDING = .FALSE.
          END IF
 C
          ATMDIF = ATMPOT(I) - ATMACT(I)
-         IF (DABS(ATMDIF).LT.1.0D-12) ATMDIF=ZERO
+         IF (DABS(ATMDIF).LT.1.0D-14) ATMDIF=ZERO
          PL = PONDNOD(I) + (ATMDIF * DELTAT / ARENOD(I))
 cm       if (i.eq.264) then
 cm          write(666,*) 'prima',time,atmpot(i),atmact(i),pl,pnew(i),
