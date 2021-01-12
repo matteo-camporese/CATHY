@@ -35,43 +35,43 @@
    if '%choice%'=='0' goto END
    
    :UNO
-   lf95 wpar.f90 mpar.f90
+   gfortran wpar.f90 mpar.f90
    goto END
    
    :DUE
-   lf95 wbb.f90 wbb_sr.f90 mpar.f90 mbbio.f90
+   gfortran wbb.f90 wbb_sr.f90 mpar.f90 mbbio.f90
    goto END
    
    :TRE
-   lf95 cbb.f90 mpar.f90 mbbio.f90
+   gfortran cbb.f90 mpar.f90 mbbio.f90
    goto END
    
    :QUATTRO
-   lf95 rn.f90 mpar.f90 mbbio.f90 csort.f90 qsort.f90 depit.f90 cca.f90 smean.f90 dsf.f90 facet.f90 hg.f90
+   gfortran rn.f90 mpar.f90 mbbio.f90 csort.f90 qsort.f90 depit.f90 cca.f90 smean.f90 dsf.f90 facet.f90 hg.f90
    goto END
       
    :CINQUE
-   lf95 rrbb.f90 mpar.f90 mbbio.f90
+   gfortran rrbb.f90 mpar.f90 mbbio.f90
    goto END
    
    :SEI
-   lf95 rbb.f90 mpar.f90 mbbio.f90
+   gfortran rbb.f90 mpar.f90 mbbio.f90
    goto END
    
    :SETTE
-   lf95 mrbb.f90 mrbb_sr.f90 mpar.f90 mbbio.f90
+   gfortran mrbb.f90 mrbb_sr.f90 mpar.f90 mbbio.f90
    goto END
    
    :OTTO
-   lf95 bb2shp.f90 bb2shp_sr.f90 mpar.f90 mbbio.f90 shape.f90 dbase.f90 streamer.f90
+   gfortran bb2shp.f90 bb2shp_sr.f90 mpar.f90 mbbio.f90 shape.f90 dbase.f90 streamer.f90
    goto END
 
    :NOVE
-   lf95 cat_del.f90 mpar.f90 mbbio.f90
+   gfortran cat_del.f90 mpar.f90 mbbio.f90
    goto END
       
    :DIECI
-   lf95 cppp.f90 mpar.f90 mbbio.f90 wbb_sr.f90 csort.f90 qsort.f90 depit.f90 cca.f90 smean.f90 dsf.f90 facet.f90 hg.f90 mrbb_sr.f90 bb2shp_sr.f90 shape.f90 dbase.f90 streamer.f90
+   gfortran cppp.f90 mpar.f90 mbbio.f90 wbb_sr.f90 csort.f90 qsort.f90 depit.f90 cca.f90 smean.f90 dsf.f90 facet.f90 hg.f90 mrbb_sr.f90 bb2shp_sr.f90 shape.f90 dbase.f90 streamer.f90
    goto END
   
      

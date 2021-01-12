@@ -36,7 +36,11 @@ C  and replicated.
 C
       READ(IIN50,*) NUDN,NUDFLAG,WFLAG
       WRITE(IOUT2,1000) NUDN
-      IF (NUDN .EQ. 0) GO TO 900
+      IF (NUDN .EQ. 0) THEN
+         NUDT=0
+         NUDG=0.0
+         GO TO 900
+      END IF
       READ(IIN50,*) NUDT,NUDG
       WRITE(IOUT2,1010) NUDT,NUDG
       READ(IIN50,*) (NUDTIM(I),I=1,NUDT)

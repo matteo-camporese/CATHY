@@ -206,19 +206,6 @@ C
       END IF
       PONDP = PONDING
 C
-C  read and initialize atmospheric boundary condition parameters and
-C  arrays for first time step (times 0.0 and DELTAT)
-C
-      CALL ATMONE(NNOD,HSPATM,HTIATM,IETO,TIME,DELTAT,PONDH_MIN,
-     1     IFATM,IFATMP,ARENOD,ATMPOT,ATMACT,ATMOLD,ATMTIM,
-     2     ATMINP,PNEW,PTIMEP,ANP,ANQ,ACONTP,
-     3     ACONTQ,NSF,NSFNUM,NSFNOD)
-C
-C     WRITE(225,*) TIME                                     
-C     WRITE(225,*) ANP                                        
-C     WRITE(225,*) (ACONTP(I),I=1,ANP)                        
-C     WRITE(225,*) (PRESC(I),I=1,ANP)
-C
 C unit IIN7 initial input: seepage face boundary conditions
 C
       call sfvone(iin7,iterm,iout2,iprt1,n,nsfmax,nnsfmx,
@@ -241,11 +228,14 @@ C
       CALL SFINIT(N,NSF,NSFNUM,NSFNOD,SFEX,SFEXP,SFEXIT,DUPUIT,
      1            PTIMEP,PNEW,SFFLAG,DELTAT,Z,
      1            PUNTDIRSF_NODE)
-
-C     WRITE(226,*) TIME                                       
-C     WRITE(226,*) ANP                                        
-C     WRITE(226,*) (ACONTP(I),I=1,ANP)                        
-C     WRITE(226,*) (PRESC(I),I=1,ANP)
+C
+C  read and initialize atmospheric boundary condition parameters and
+C  arrays for first time step (times 0.0 and DELTAT)
+C
+      CALL ATMONE(NNOD,HSPATM,HTIATM,IETO,TIME,DELTAT,PONDH_MIN,
+     1     IFATM,IFATMP,ARENOD,ATMPOT,ATMACT,ATMOLD,ATMTIM,
+     2     ATMINP,PNEW,PTIMEP,ANP,ANQ,ACONTP,
+     3     ACONTQ,NSF,NSFNUM,NSFNOD)
 C
 C  read and initialize nudging parameters and arrays
 C
