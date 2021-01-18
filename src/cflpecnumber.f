@@ -49,8 +49,7 @@ c     write(999,*)surfar(j),volur(j)
       if (supdiffus.eq.0.0d0) then
          pecnumb=1.e+20
       else
-         pecnumb = cflnumb/
-     *            (supdiffus*deltatadv*(surfar(1)**2.0d0)*volur(1))
+         pecnumb=cflnumb/(supdiffus*deltatadv)
       end if
          
       return 
