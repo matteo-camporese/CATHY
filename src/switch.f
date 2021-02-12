@@ -16,17 +16,15 @@ C
       LOGICAL   PONDING
       REAL*8    PL,ATMDIF
       REAL*8    TIME,DELTAT,PONDH_MIN
-      REAL*8    ZERO
       REAL*8    ARENOD(*),PONDNOD(*),ATMPOT(*),ATMACT(*)
       REAL*8    PNEW(*),OVFLNOD(*)
       INCLUDE  'IOUNITS.H'
       INCLUDE  'SOILCHAR.H'
-      PARAMETER (ZERO = 0.0d0)
+      REAL*8    ZERO,SMALL
+      PARAMETER (ZERO = 0.0d0,SMALL = 1.0D-14)
 C
       PONDING = .FALSE.
 
-cm    write(99,*)'nodo atmpot       atmact       pondnod      pnew',
-cm   1'         pl            ifatm'
       DO I=1,NNOD
          IF (IFATM(I) .EQ. -1) THEN
 cc            PONDING = .FALSE.
@@ -35,15 +33,8 @@ cc            PONDING = .FALSE.
          END IF
 C
          ATMDIF = ATMPOT(I) - ATMACT(I)
-         IF (DABS(ATMDIF).LT.1.0D-14) ATMDIF=ZERO
+         IF (DABS(ATMDIF).LT.SMALL) ATMDIF=ZERO
          PL = PONDNOD(I) + (ATMDIF * DELTAT / ARENOD(I))
-cm       if (i.eq.264) then
-cm          write(666,*) 'prima',time,atmpot(i),atmact(i),pl,pnew(i),
-cm   1                    ifatm(i)
-cm       end if
-cm       write(99,1000) i,atmpot(i),atmact(i),
-cm   1                              pondnod(i),pnew(i),pl,
-cm   2                              ifatm(i)
 c1000 FORMAT(i4,5e13.5,i4)
          IF (IFATM(I) .EQ. 2) THEN
             IF (ATMPOT(I) .GE. ZERO) THEN
@@ -65,7 +56,7 @@ cc                     PONDING = .FALSE.
 C  need to decide how to treat this case: set PNEW to 0, to PL, or
 C  leave it as is??
 C+                   PNEW(I) = ZERO
-C+                   PNEW(I) = PL
+                     PNEW(I) = PL
                      OVFLNOD(I) = ATMDIF
                      GO TO 500
                   END IF
@@ -107,7 +98,7 @@ cc                     PONDING = .FALSE.
 C  need to decide how to treat this case: set PNEW to 0, to PL, or
 C  leave it as is??
 C+                   PNEW(I) = ZERO
-C+                   PNEW(I) = PL
+                     PNEW(I) = PL
                      OVFLNOD(I) = ATMDIF
                      GO TO 500
                   END IF
@@ -141,8 +132,8 @@ cc                     PONDING = .FALSE.
                      IFATM(I) = 1
 C  need to decide how to treat this case: set PNEW to 0, to PL, or
 C  leave it as is??
-                     PNEW(I) = ZERO
-C+                   PNEW(I) = PL
+CM                   PNEW(I) = ZERO
+                     PNEW(I) = PL
                      OVFLNOD(I) = ATMDIF
                      GO TO 500
                   END IF
@@ -152,8 +143,7 @@ cc                     PONDING = .FALSE.
                      ATMACT(I) = ATMPOT(I)
 C  need to decide how to treat this case: set PNEW to 0 or leave it
 C  as is??
-C+                   PNEW(I) = ZERO
-                     PNEW(I) = ZERO
+CM                   PNEW(I) = ZERO
                      OVFLNOD(I) = -PONDNOD(I) * ARENOD(I) / DELTAT
                      GO TO 500
                   END IF
@@ -184,8 +174,8 @@ cc                     PONDING = .FALSE.
                      IFATM(I) = 1
 C  need to decide how to treat this case: set PNEW to 0, to PL, or
 C  leave it as is??
-                     PNEW(I) = ZERO
-C+                   PNEW(I) = PL
+CM                   PNEW(I) = ZERO
+                     PNEW(I) = PL
                      OVFLNOD(I) = ATMDIF
                      GO TO 500
                   END IF
@@ -195,8 +185,7 @@ cc                     PONDING = .FALSE.
                      ATMACT(I) = ATMPOT(I)
 C  need to decide how to treat this case: set PNEW to 0 or leave it
 C  as is??
-C+                   PNEW(I) = ZERO
-                     PNEW(I) = ZERO
+CM                   PNEW(I) = ZERO
                      OVFLNOD(I) = -PONDNOD(I) * ARENOD(I) / DELTAT
                      GO TO 500
                   END IF
@@ -236,7 +225,7 @@ cc                     PONDING = .FALSE.
 C  need to decide how to treat this case: set PNEW to 0, to PL, or
 C  leave it as is??
 C+                   PNEW(I) = ZERO
-C+                   PNEW(I) = PL
+                     PNEW(I) = PL
                      OVFLNOD(I) = ATMDIF
                      GO TO 500
                   END IF
@@ -281,7 +270,7 @@ cc                     PONDING = .FALSE.
 C  need to decide how to treat this case: set PNEW to 0, to PL, or
 C  leave it as is??
 C+                   PNEW(I) = ZERO
-C+                   PNEW(I) = PL
+                     PNEW(I) = PL
                      OVFLNOD(I) = ATMDIF
                      GO TO 500
                   END IF
@@ -302,18 +291,7 @@ C
 C  saturated (but not ponded) or 'air dry', evaporation, infiltration
 C  (case G)
 C
-                  IF (PNEW(I) .LE. PMIN) THEN
-                     if (atmact(i) .lt. atmpot(i)) then
-                        ifatm(i)=0
-                        atmact(i)=atmpot(i)
-                        pnew(i)=pmin
-                        ovflnod(i)=zero
-                        go to 500
-                     else 
-                        go to 500
-                     end if
-cxcx                 WRITE(IOUT9,9040) I,ATMACT(I),TIME,DELTAT
-                  END IF
+                  IF (PNEW(I) .LE. PMIN) GO TO 500
                   IF (PL .GE. PONDH_MIN) THEN
                      PONDING = .TRUE.
                      IFATM(I) = 2
@@ -327,7 +305,7 @@ cc                     PONDING = .FALSE.
 C  need to decide how to treat this case: set PNEW to 0, to PL, or
 C  leave it as is??
 C+                   PNEW(I) = ZERO
-C+                   PNEW(I) = PL
+                     PNEW(I) = PL
                      OVFLNOD(I) = ATMDIF
                      GO TO 500
                   END IF
@@ -382,7 +360,7 @@ cc                     PONDING = .FALSE.
 C  need to decide how to treat this case: set PNEW to 0, to PL, or
 C  leave it as is??
 C+                   PNEW(I) = ZERO
-C+                   PNEW(I) = PL
+                     PNEW(I) = PL
                      OVFLNOD(I) = ATMDIF
                      GO TO 500
                   END IF
@@ -481,13 +459,6 @@ cc                  PONDING = .FALSE.
             END IF
          END IF
   500    CONTINUE
-cm       if (i.eq.264) then
-cm          write(666,*) 'dopo ',time,atmpot(i),atmact(i),pl,pnew(i),
-cm   1                    ifatm(i)
-cm       end if
-cd         write(99,'(i2,2x,7f10.5,i4)') i,atmpot(i),atmact(i),atmdif,
-cd     1                              pondnod(i),pl,pnew(i),ovflnod(i),
-cd     2                              ifatm(i)
       END DO
 C
       RETURN
