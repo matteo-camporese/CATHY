@@ -12,14 +12,14 @@ C                Cauchy BC for subsurface transport
 C***********************************************************************
 C
       subroutine surf_flowtra(ncell,nnod,nrow,ncol,ntri,dostep,numres,
-     1     ncell_coarse,ncelnl,cell,
-     2     indcel,indcelwl,tipo_r,reservr,dem_map,
-     3     lakes_map,cellcol,cellrow,
-     4     celtype,cells_r,tp2d,triang,
-     5     time,deltat,arenod,OVFLNOD,PONDNOD,
-     6     ovflcel,pondcel,TRAFLNOD,TRAFLCEL,CONCNOD,
-     7     CONCCEL,N_HA,NSURF,NSURFT,NSURFT_TB,TRANSP,
-     8     SOURCE_MIXING,MIX_CORRECT,SURFACE_MIX_SN)
+     1                       ncell_coarse,ncelnl,cell,
+     2                       indcel,indcelwl,tipo_r,reservr,dem_map,
+     3                       lakes_map,cellcol,cellrow,
+     4                       celtype,cells_r,tp2d,triang,
+     5                       time,deltat,arenod,OVFLNOD,PONDNOD,
+     6                       ovflcel,pondcel,TRAFLNOD,TRAFLCEL,CONCNOD,
+     7                       CONCCEL,N_HA,NSURF,NSURFT,NSURFT_TB,TRANSP,
+     8                       SOURCE_MIXING,MIX_CORRECT,SURFACE_MIX_SN)
 C     
       implicit none
       include 'CATHY.H'
@@ -53,17 +53,20 @@ C
 c
 c  from node to cell
 c    
+cm    call nod_cell(ncell,nrow,ncol,dostep,ncell_coarse,
+cm   1              nnod,cell,dem_map,indcelwl,cellcoarse,OVFLNOD,
+cm   2              ovflcel,arenod,delta_x,delta_y,pondnod)
       call nod_cell(ncell,nrow,ncol,dostep,ncell_coarse,
      1              nnod,cell,dem_map,indcelwl,cellcoarse,OVFLNOD,
-     2              ovflcel,arenod,delta_x,delta_y,pondnod)
-     
+     2              ovflcel,arenod,delta_x,delta_y)
+c    
 c   trasferimento informazioni al surf_route (cambia la numerazione
 c   delle celle se ci sono laghi!)
 c     
       call transfer_f3d_surf(nrow,ncol,indcel,indcelwl,
      1                       surface_water_sn,ovflcel,
      2                       reservr,lakes_map)
-    
+c   
       IF (TRANSP) THEN 
          call nod_cell(ncell,nrow,ncol,dostep,ncell_coarse,
      1        nnod,cell,dem_map,indcelwl,cellcoarse,traflnod,
@@ -167,10 +170,13 @@ c
 c
 c  calcola PONDNOD da PONDCEL passando per i triangoli
 c
+cm    call cell_nod(ncell,nrow,ncol,nnod,ntri,dostep,
+cm   1                    cell,tp2d,triang,indcel,dem_map,
+cm   2                    PONDCEL,cellcoarse,pondnod,
+cm   3                    delta_x,delta_y,arenod)
       call cell_nod(ncell,nrow,ncol,nnod,ntri,dostep,
-     1                    cell,tp2d,triang,indcel,dem_map,
-     2                    PONDCEL,cellcoarse,pondnod,
-     3                    delta_x,delta_y,arenod)
+     1              tp2d,triang,indcelwl,dem_map,
+     2              pondcel,cellcoarse,PONDNOD)
 c
       IF (TRANSP) THEN 
          call transfer_surf_f3d(nrow,ncol,indcel,indcelwl,
@@ -178,8 +184,11 @@ c
      2        CONCCEL,h_pool_kkp1_vec,
      3        lakes_map,elevation_with_lakes)
 c           
-         call cell_nod_tra(ncell,nnod,cell,CONCCEL,concnod,
+         call cell_nod_tra(ntri,nnod,tp2d,triang,CONCCEL,concnod,
      3                    delta_x,delta_y,arenod,pondcel,pondnod)
+cm       call cell_nod(ncell,nrow,ncol,nnod,ntri,dostep,
+cm   1        tp2d,triang,indcelwl,dem_map,
+cm   2        CONCCEL,cellcoarse,CONCNOD)
 c
       END IF
       return
