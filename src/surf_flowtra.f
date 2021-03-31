@@ -70,11 +70,11 @@ c
       IF (TRANSP) THEN 
          call nod_cell(ncell,nrow,ncol,dostep,ncell_coarse,
      1        nnod,cell,dem_map,indcelwl,cellcoarse,traflnod,
-     2        traflcel,arenod,delta_x,delta_y,pondnod)
+     2        traflcel,arenod,delta_x,delta_y)
 
          call nod_cell(ncell,nrow,ncol,dostep,ncell_coarse,
      1        nnod,cell,dem_map,indcelwl,cellcoarse,source_mixing,
-     2        traflcel_mix,arenod,delta_x,delta_y,pondnod)
+     2        traflcel_mix,arenod,delta_x,delta_y)
 
          call transfer_f3d_surf(nrow,ncol,indcel,indcelwl,
      1        surface_conc_sn,traflcel,
