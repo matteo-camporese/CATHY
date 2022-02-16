@@ -10,7 +10,7 @@ C
      1                  L2NORM,IKMAX,KSF,NSFNUM,NSFNOD,SFEX,SFEXIT,
      2                  SFFLAG,IFATM,SURF,PONDING,KSFZER,TOLSWI,
      3                  TIME,DELTAT,PIKMAX,PINF,PL2,FINF,FL2,PONDH_MIN,
-     4                  PNEW,POLD,TNOTI,ATMACT,ATMPOT,SFQ,
+     4                  PNEW,POLD,TNOTI,ATMACT,ATMPOT,SFQ,QTRANIE,
      5                  ARENOD,PONDNOD,OVFLNOD,DUPUIT,Z,PUNTDIRSF_NODE)
 C
       IMPLICIT NONE
@@ -24,7 +24,7 @@ C
       REAL*8   TOLSWI,TIME,DELTAT
       REAL*8   PIKMAX,PINF,PL2,FINF,FL2,PONDH_MIN
       REAL*8   PNEW(*),POLD(*),TNOTI(*),Z(*)
-      REAL*8   ATMACT(*),ATMPOT(*),SFQ(NSFMAX,*)
+      REAL*8   ATMACT(*),ATMPOT(*),SFQ(NSFMAX,*),QTRANIE(*)
       REAL*8   ARENOD(*),PONDNOD(*),OVFLNOD(*)
       include 'NORMVL.H'
       include 'IOUNITS.H'
@@ -65,7 +65,8 @@ cd            write(99,*) 'switch-old (not surf)'
          ELSE
 cd            write(99,*) 'switch-new (surf)' 
             CALL SWITCH(NNOD,IFATM,PONDING,TIME,DELTAT,PONDH_MIN,
-     1                  ARENOD,PONDNOD,ATMPOT,ATMACT,PNEW,OVFLNOD)
+     1                  ARENOD,PONDNOD,ATMPOT,ATMACT,QTRANIE,PNEW,
+     2                  OVFLNOD)
          END IF
       END IF
 C     

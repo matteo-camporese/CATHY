@@ -6,7 +6,8 @@ C
 C***********************************************************************
 C
       SUBROUTINE SWITCH(NNOD,IFATM,PONDING,TIME,DELTAT,PONDH_MIN,
-     1                  ARENOD,PONDNOD,ATMPOT,ATMACT,PNEW,OVFLNOD)
+     1                  ARENOD,PONDNOD,ATMPOT,ATMACT,QTRANIE,PNEW,
+     2                  OVFLNOD)
 C
       IMPLICIT  NONE
       INCLUDE  'CATHY.H'
@@ -18,7 +19,7 @@ C
       REAL*8    TIME,DELTAT,PONDH_MIN
       REAL*8    ZERO,SMALL
       REAL*8    ARENOD(*),PONDNOD(*),ATMPOT(*),ATMACT(*)
-      REAL*8    PNEW(*),OVFLNOD(*)
+      REAL*8    PNEW(*),OVFLNOD(*),QTRANIE(*)
       INCLUDE  'IOUNITS.H'
       INCLUDE  'SOILCHAR.H'
       PARAMETER (ZERO = 0.0d0,SMALL = 1.0D-14)
@@ -32,7 +33,7 @@ cc            PONDING = .FALSE.
             GO TO 500
          END IF
 C
-         ATMDIF = ATMPOT(I) - ATMACT(I)
+         ATMDIF = ATMPOT(I) - (ATMACT(I) - QTRANIE(I))
          IF (DABS(ATMDIF).LT.SMALL) ATMDIF=ZERO
          PL = PONDNOD(I) + (ATMDIF * DELTAT / ARENOD(I))
          IF (IFATM(I) .EQ. 2) THEN
