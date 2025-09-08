@@ -35,8 +35,10 @@ C     END DO
 C
 C  calculate the area assigned to each surface node
 C
-      
       CALL AREA2D(NNOD,NTRI,TRIANG,IP3,ARENOD,X,Y)
+      IF (IPRT1.EQ.3) THEN
+         WRITE(111,*)(ARENOD(I),I=1,NNOD)
+      END IF
 C
 C  generate the three-dimensional grid
 C

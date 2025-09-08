@@ -176,7 +176,7 @@ C
       IF(FNO17.NE. '/dev/null') FNO17=DIR(1:NCHAR)//'/'//FNO17
       IF(FNO18.NE. '/dev/null') FNO18=DIR(1:NCHAR)//'/'//FNO18
       IF(FNO19.NE. '/dev/null') FNO19=DIR(1:NCHAR)//'/'//FNO19
-      IF(FNO10.NE. '/dev/null') FNO20=DIR(1:NCHAR)//'/'//FNO20
+      IF(FNO20.NE. '/dev/null') FNO20=DIR(1:NCHAR)//'/'//FNO20
       IF(FNO30.NE. '/dev/null') FNO30=DIR(1:NCHAR)//'/'//FNO30
       IF(FNO31.NE. '/dev/null') FNO31=DIR(1:NCHAR)//'/'//FNO31
       IF(FNO32.NE. '/dev/null') FNO32=DIR(1:NCHAR)//'/'//FNO32

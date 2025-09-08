@@ -30,6 +30,7 @@ C
       AACT=ZERO
       refl=ZERO
       infflow=zero
+      inf_tot=zero
       evap = zero
       OVFLOW=ZERO !ms
 C
@@ -74,6 +75,7 @@ C                    ...... need to get contribution from surface volume
                   evap=evap+atmpot(k)
                END IF
                infflow = infflow + atmact(k)
+               inf_tot = inf_tot + atmact(k)
                OVFLOW = OVFLOW - ATMACT(K) + ATMPOT(K)
             END IF
 C
@@ -127,6 +129,7 @@ C                    ..................................... INCONSISTENCY
                      evap=evap+atmpot(k)
                   END IF
                   infflow = infflow + atmact(k)
+                  inf_tot = inf_tot + atmact(k)
                END IF
             ELSE IF (PNEW(K) .LE. PMIN) THEN
 C           ---------------------------------------- surface unsaturated
@@ -194,9 +197,9 @@ C
              end if
          END IF
       END DO
-cp      evap_eff = evap_eff + evap*deltat
-cp      inf_tot = inf_tot + infflow*deltat
-cp      reflow = reflow + refl*deltat
+cp    evap_eff = evap_eff + evap*deltat
+cp    inf_tot = inf_tot + infflow*deltat
+cp    reflow = reflow + refl*deltat
 C
 C
       RETURN

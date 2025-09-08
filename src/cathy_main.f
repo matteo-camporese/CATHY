@@ -2437,7 +2437,7 @@ C
 C  real arrays for pressure heads, velocities, and outputs
 C
       REAL*8  PNEW(NMAX),POLD(NMAX),PDIFF(NMAX),PTNEW(NMAX)
-      REAL*8  PTOLD(NMAX),PTIMEP(NMAX)
+      REAL*8  PTOLD(NMAX),PTIMEP(NMAX),WT(NODMAX)
       REAL*8  UNOD(NMAX),VNOD(NMAX),WNOD(NMAX),RECNOD(NODMAX)
       REAL*8  UU(NTEMAX),VV(NTEMAX),WW(NTEMAX),TIMPRT(MAXPRT)
 C
@@ -2811,8 +2811,8 @@ C ------------------------------------------
 C
 C  recharge calculation at initial conditions
 C
-         CALL RECHARGE(NNOD,NSTR,WNOD,ARENOD,PTIMEP,TIME,DELTAT,RECFLOW,
-     1                 RECVOL,RECNOD)
+         CALL RECHARGE(NNOD,NSTR,WNOD,ARENOD,VOLNOD,PNEW,PTIMEP,Z,
+     1                 SNODI,PNODI,0.0d0,DELTAT,RECFLOW,RECVOL,RECNOD)
 C  
 C  detailed output at initial conditions
 C
@@ -3625,7 +3625,7 @@ CM    END IF
 C
 C output of the water table depth at the NODVP nodes
 C
-      IF (NUMVP .GT. 0) CALL WTDEPTH(NUMVP,NODVP,NSTR,NNOD,TIME,Z,PNEW)
+      IF (NUMVP.GT.0) CALL WTDEPTH(NUMVP,NODVP,NSTR,NNOD,TIME,Z,PNEW,WT)
 C
 C update of surface variables for not coupled case
 C     
@@ -3655,13 +3655,13 @@ C
 C
 C  recharge calculation
 C
-         CALL RECHARGE(NNOD,NSTR,WNOD,ARENOD,PNEW,TIME,DELTAT,RECFLOW,
-     1              RECVOL,RECNOD)
+         CALL RECHARGE(NNOD,NSTR,WNOD,ARENOD,VOLNOD,PNEW,PTIMEP,Z,
+     1                SNODI,PNODI,TIME,DELTAT,RECFLOW,RECVOL,RECNOD)
 C
 C  hydrograph output
 C
-         WRITE(IOUT7,1190) NSTEP,DELTAT,TIME,APOT,AACT,OVFLOW,REFLOW,
-     1                   SFFLW,RECFLOW,RECVOL/AREATOT
+         WRITE(IOUT7,1190) NSTEP,DELTAT,TIME,APOT,AACT,OVFLOW,inf_tot-
+     1                     REFLOW,SFFLW,RECFLOW,RECVOL/AREATOT
          WRITE(IOUT8,1195) NSTEP,DELTAT,TIME,NDIN+NDOUT,NNIN+NNOUT
          WRITE(IOUT30,1197) NSTEP,DELTAT,TIME,VSFFLW,VSFFLW/DELTAT
          WRITE(IOUT31,1197) NSTEP,DELTAT,TIME,VNDIN+VNDOUT,

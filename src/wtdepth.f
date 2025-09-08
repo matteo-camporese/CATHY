@@ -5,7 +5,7 @@ C  output of the water table depth at the NODVP nodes
 C
 C***********************************************************************
 C
-      SUBROUTINE WTDEPTH(NUMVP,NODVP,NSTR,NNOD,TIME,Z,PNEW)
+      SUBROUTINE WTDEPTH(NUMVP,NODVP,NSTR,NNOD,TIME,Z,PNEW,WT)
 C
       IMPLICIT  NONE
       INTEGER   I,J,INOD1,INOD2
@@ -45,7 +45,7 @@ CM             WT(I)=Z(NODVP(I))-Z(NODVP(I)+NSTR*NNOD)
             END IF
          END DO
       END DO
-      WRITE(IOUT57,1020) TIME,(WT(I),I=1,NUMVP)
+      IF (NUMVP.LT.NNOD) WRITE(IOUT57,1020) TIME,(WT(I),I=1,NUMVP)
 C
       RETURN
  1020 FORMAT(70(1PE15.6))
