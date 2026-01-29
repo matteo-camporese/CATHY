@@ -17,6 +17,8 @@ C   LHYGES, Strasbourg, France
 C
 C   Revision History:
 C   ----------------
+C   Jan/2026   : added computation of total and saturated storage (as in
+C                Camporese et al., WRR 2025) in routine recharge.f
 C   May/2018   : added variable vegetation type (variable PCANA,PCREF,
 C                PCWLT,ZROOT,PZ,OMGC within the domain; they are all defined
 C                in the SOIL input file). The root_map input file is now
@@ -1644,6 +1646,10 @@ C   VV    (NT)   - Darcy velocity-y for each element
 C   WW    (NT)   - Darcy velocity-z for each element
 C   RECNOD(NNOD) - recharge flux computed at nodes immediately above the
 C                  water table, reconducted to surface nodes.
+C   TWS(NNOD)    - total water storage (TWS) integrated along node columns
+C   STOR         - saturated storage and its two derivative components (ie
+C   MWT, SST       moving water table and specific storage; Camporese et al.
+C                  2026)
 C   TIMPRT(NPRT) - time values for detailed output. Detailed output is
 C                  produced at initial conditions (TIME=0), at time
 C                  values indicated in TIMPRT, and at the end of the
@@ -2437,7 +2443,7 @@ C
 C  real arrays for pressure heads, velocities, and outputs
 C
       REAL*8  PNEW(NMAX),POLD(NMAX),PDIFF(NMAX),PTNEW(NMAX)
-      REAL*8  PTOLD(NMAX),PTIMEP(NMAX),WT(NODMAX)
+      REAL*8  PTOLD(NMAX),PTIMEP(NMAX),WT(NODMAX),TWS(NODMAX)
       REAL*8  UNOD(NMAX),VNOD(NMAX),WNOD(NMAX),RECNOD(NODMAX)
       REAL*8  UU(NTEMAX),VV(NTEMAX),WW(NTEMAX),TIMPRT(MAXPRT)
 C
@@ -2812,7 +2818,8 @@ C
 C  recharge calculation at initial conditions
 C
          CALL RECHARGE(NNOD,NSTR,WNOD,ARENOD,VOLNOD,PNEW,PTIMEP,Z,
-     1                 SNODI,PNODI,0.0d0,DELTAT,RECFLOW,RECVOL,RECNOD)
+     1                 SNODI,PNODI,0.0d0,DELTAT,RECFLOW,RECVOL,RECNOD,
+     2                 TWS)
 C  
 C  detailed output at initial conditions
 C
@@ -2823,7 +2830,7 @@ C
          CALL DETOUT(0,IPEAT,IPRT,N,NNOD,NUMVP,NSTR,0,0.0D0,NODVP,
      1        SATSUR,PNEW,INDE0,DEF,SW,CKRW,UNOD,VNOD,WNOD,NT,UU,
      2        VV,WW,X,Y,Z,OVFLNOD,ATMACT,ARENOD,PONDNOD,IFATM,PNODI,
-     3        RECNOD,QTRANIE,CNOLD)
+     3        RECNOD,TWS,QTRANIE,CNOLD)
 CM       IF (NCOUT .EQ. 1) THEN
 CM      CALL DETOUT_NETCDF(0,NPRT,TIME,NROW,NCOL,NNOD,NSTR,PNEW,SW,
 CM   1           PONDNOD)
@@ -3656,7 +3663,8 @@ C
 C  recharge calculation
 C
          CALL RECHARGE(NNOD,NSTR,WNOD,ARENOD,VOLNOD,PNEW,PTIMEP,Z,
-     1                SNODI,PNODI,TIME,DELTAT,RECFLOW,RECVOL,RECNOD)
+     1                SNODI,PNODI,TIME,DELTAT,RECFLOW,RECVOL,RECNOD,
+     2                TWS)
 C
 C  hydrograph output
 C
@@ -3717,7 +3725,7 @@ C
                CALL DETOUT(KPRT,IPEAT,IPRT,N,NNOD,NUMVP,NSTR,NSTEP,TIME,
      1                 NODVP,SATSUR,PNEW,INDE,DEF,SW,CKRW,UNOD,VNOD,
      2                 WNOD,NT,UU,VV,WW,X,Y,Z,OVFLNOD,atmact,arenod,
-     3                 PONDNOD,ifatm,PNODI,RECNOD,QTRANIE,CNNEW)
+     3                 PONDNOD,ifatm,PNODI,RECNOD,TWS,QTRANIE,CNNEW)
 CM          IF (NCOUT .EQ. 1) THEN
 CM             CALL DETOUT_NETCDF(KPRT,NPRT,TIME,NROW,NCOL,NNOD,NSTR,
 CM   1                 PNEW,SW,PONDNOD)
@@ -3856,7 +3864,7 @@ C
          CALL DETOUT(KPRT,IPEAT,IPRT,N,NNOD,NUMVP,NSTR,NSTEP,TIME,NODVP,
      1        SATSUR,PNEW,INDE,DEF,SW,CKRW,UNOD,VNOD,WNOD,NT,
      2        UU,VV,WW,X,Y,Z,OVFLNOD,atmact,arenod,PONDNOD,ifatm,
-     3        PNODI,RECNOD,QTRANIE,CNNEW)
+     3        PNODI,RECNOD,TWS,QTRANIE,CNNEW)
          IF ((IPRT.GE.2).AND.(VTKF.GT.0)) THEN
             CALL VTKRIS3D(NT,N,100+kprt, TETRA,PNEW,SW, 
      1                    UU,VV,WW,X,Y,Z,KS,TIME,VTKF)

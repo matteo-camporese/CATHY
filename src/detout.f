@@ -8,7 +8,7 @@ C
       SUBROUTINE DETOUT(KPRT,IPEAT,IPRT,N,NNOD,NUMVP,NSTR,NSTEP,TIME,
      1                 NODVP,SATSUR,PNEW,INDE,DEF,SW,CKRW,UNOD,VNOD,
      2                 WNOD,NT,UU,VV,WW,X,Y,Z,OVFLNOD,ATMACT,ARENOD,
-     3                 PONDNOD,IFATM,PNODI,RECNOD,QTRANIE,CNNEW)
+     3                 PONDNOD,IFATM,PNODI,RECNOD,TWS,QTRANIE,CNNEW)
 C
       IMPLICIT  NONE
       INCLUDE   'CATHY.H'
@@ -21,7 +21,7 @@ C
       REAL*8    UU(*),VV(*),WW(*)
       REAL*8    X(*),Y(*),Z(*)
       real*8    ovflnod(*),atmact(*),arenod(*),pondnod(*),QTRANIE(*)
-      real*8    RECNOD(NODMAX),ETA(NODMAX)
+      real*8    RECNOD(NODMAX),ETA(NODMAX),TWS(NODMAX)
       INCLUDE  'IOUNITS.H'
 C
 
@@ -102,6 +102,7 @@ ccc   end do
       WRITE(IOUT18,2040)
       WRITE(IOUT44,2041)
       WRITE(777,2042)
+      WRITE(888,2043)
       DO I=1,NNOD
          SATSUR(I)=1
          IF (PNEW(I) .GE. 0.0D0) THEN
@@ -120,6 +121,7 @@ ccc   end do
             ETA(I)=ETA(I)+QTRANIE((K-1)*NNOD+I)
          END DO
          WRITE(777,2060) I,X(I),Y(I),ETA(I)/ARENOD(I)
+         WRITE(888,2060) I,X(I),Y(I),TWS(I)/ARENOD(I)
       END DO
 C
       RETURN
@@ -146,6 +148,8 @@ C
      1       '      REC. FLUX')
  2042 FORMAT(' SURFACE NODE              X              Y',
      1       '      ACT. ETRA')
+ 2043 FORMAT(' SURFACE NODE              X              Y',
+     1       '      TOT. STOR')
  2050 FORMAT(' SURFACE NODE              X              Y',
      1       '  PONDING HEAD ')
  2060 FORMAT(7X,I6,3(1PE15.6),i6,1pe15.6)

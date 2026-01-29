@@ -6,7 +6,8 @@ C
 C***********************************************************************
 C
       SUBROUTINE RECHARGE(NNOD,NSTR,WNOD,ARENOD,VOLNOD,PNEW,PTIMEP,Z,
-     1                    SNODI,PNODI,TIME,DELTAT,RECFLOW,RECVOL,RECNOD)
+     1                    SNODI,PNODI,TIME,DELTAT,RECFLOW,RECVOL,RECNOD,
+     2                    TWS)
 C
       IMPLICIT  NONE
       INCLUDE   'CATHY.H'
@@ -14,14 +15,15 @@ C
       INTEGER   NNOD,NSTR
       INTEGER   FLAG(NNOD),NODWT(NNOD)
       REAL*8    TIME,DELTAT,ZERO,RC,FVGSE,ONE
-      REAL*8    RECFLOW,RECVOL,SST,MWT,STOR
+      REAL*8    RECFLOW,RECVOL,SST,MWT,STOR,TSTOR
       REAL*8    WNOD(*),ARENOD(*),VOLNOD(*),PNEW(*),PTIMEP(*),Z(*)
       REAL*8    SWNEW(NMAX),SWTIMEP(NMAX),WTNEW(NODMAX),WTTIMEP(NODMAX)
-      REAL*8    SNODI(*),PNODI(*),RECNOD(*)
+      REAL*8    SNODI(*),PNODI(*),RECNOD(*),TWS(NODMAX)
       PARAMETER (ZERO=0.0d0,ONE=1.0d0)
       INCLUDE   'SOILCHAR.H'
 C
       RECFLOW = ZERO
+      TSTOR = ZERO
       IF (TIME.EQ.0.0D0) THEN
          RECVOL = ZERO
       END IF
@@ -37,10 +39,12 @@ C
       STOR = ZERO
 C
       DO I=1,NNOD
+         TWS(I) = ZERO
          MWT = MWT + PNODI(I)*(WTNEW(I)-WTTIMEP(I))*ARENOD(I)
          DO J=NSTR,1,-1
             INOD1=I+J*NNOD
             INOD2=I+(J-1)*NNOD
+            TWS(I) = TWS(I) + SWNEW(INOD1)*VOLNOD(INOD1)*PNODI(INOD1)
             SWNEW(INOD1)=VGPNOT(INOD1)*FVGSE(PNEW(INOD1),INOD1)+
      &                   VGRMC(INOD1)/PNODI(INOD1)
             SWNEW(INOD2)=VGPNOT(INOD2)*FVGSE(PNEW(INOD2),INOD2)+
@@ -98,11 +102,13 @@ CM Totally unsaturated soil column
                FLAG(I)=-2
             END IF
          END DO
+         TWS(I) = TWS(I) + SWNEW(INOD2)*VOLNOD(INOD2)*PNODI(INOD2)
          RECFLOW=RECFLOW+RECNOD(I)
+         TSTOR = TSTOR + TWS(I)
       END DO
       RECVOL=RECVOL+RECFLOW*DELTAT
       SST=SST/DELTAT
       MWT=MWT/DELTAT
-      IF (TIME.NE.0.0d0) WRITE(333,*)TIME,SST,MWT,STOR
+      IF (TIME.NE.0.0d0) WRITE(333,*)TIME,SST,MWT,STOR,TSTOR
       RETURN
       END
